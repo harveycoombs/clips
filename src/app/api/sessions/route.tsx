@@ -15,7 +15,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (!valid) return NextResponse.json({ error: "Invalid credentials." }, { status: 400 });
 
     let user = await Users.getUser(email);
-    if (!user) return NextResponse.json({ error: "Unable to create session." }, { status: 500 });
+    if (!user) return NextResponse.json({ success: false }, { status: 500 });
 
     let credentials = JWT.create(user);
 

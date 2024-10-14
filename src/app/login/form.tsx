@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 
 import Field from "../components/ui/field";
@@ -12,12 +13,20 @@ export default function Home() {
 
         let credentials = new URLSearchParams({ email: email, password: password });
 
-        let response = await fetch("/api/sessions", {
-            method: "POST",
-            body: credentials
-        })
+        try {  
+            let response = await fetch("/api/sessions", {
+                method: "POST",
+                body: credentials
+            })
 
-        let json = await response.json();
+            let json = await response.json();
+
+            if (!json.success) return;
+
+            window.location.href = "/";
+        } catch {
+
+        }
     }
 
     return (
