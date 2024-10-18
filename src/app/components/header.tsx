@@ -44,12 +44,12 @@ function HeaderNavigationItem(props: any) {
 export function getServerSideProps(context: any) {
     let { request } = context;
     let cookies = request.headers.cookie;
-  
+
     let value: string|undefined;
   
     if (cookies) {
-      let parsed = cookie.parse(cookies);
-      value = parsed.token;
+        let parsed = cookie.parse(cookies);
+        value = parsed.token;
     }
   
     return {
