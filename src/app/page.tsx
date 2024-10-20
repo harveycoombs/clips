@@ -12,12 +12,11 @@ export default async function Home() {
 
     let cookieJar = cookies();
     let token = cookieJar.get("token")?.value;
-
-    let currentUser = await JWT.authenticate(token ?? "");
+    let currentSessionUser = await JWT.authenticate(token ?? "");
 
     return (
         <>
-            <Header current="feed" user={currentUser} />
+            <Header current="feed" user={currentSessionUser} />
             <main className="h-screen w-[840px] mx-auto">
                 <h1 className="block text-lg font-semibold select-none">Your Feed</h1>
                 <section className="pt-1.5 pb-3 flex gap-1">{categories.map((category: any) => <div className="w-fit bg-indigo-200 bg-opacity-70 text-indigo-500 select-none font-semibold text-xs py-2 px-3 leading-[0.9em] rounded-full">{category.category}</div>)}</section>
