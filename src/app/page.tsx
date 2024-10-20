@@ -1,16 +1,24 @@
+import { cookies } from "next/headers";
+
 import Header from "./components/header";
 import Post from "./components/post";
 
 import { Posts } from "@/data/posts";
+import { JWT } from "@/data/users";
 
 export default async function Home() {
     let posts = await Posts.getPosts();
     let categories = await Posts.getCategories();
 
+    let cookieJar = cookies();
+    let token = cookieJar.get("token")?.value;
+
+    let currentUser = await JWT.authenticate(token ?? "");
+
     return (
         <>
-            <Header current="feed" />
-            <main className="h-screen w-[800px] mx-auto">
+            <Header current="feed" user={currentUser} />
+            <main className="h-screen w-[840px] mx-auto">
                 <h1 className="block text-lg font-semibold select-none">Your Feed</h1>
                 <section className="pt-1.5 pb-3 flex gap-1">{categories.map((category: any) => <div className="w-fit bg-indigo-200 bg-opacity-70 text-indigo-500 select-none font-semibold text-xs py-2 px-3 leading-[0.9em] rounded-full">{category.category}</div>)}</section>
                 <section className="grid grid-cols-4 gap-2">{
@@ -19,4 +27,4 @@ export default async function Home() {
             </main>
         </>
     );
-} 
+}

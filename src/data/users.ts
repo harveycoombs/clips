@@ -61,17 +61,19 @@ export class Users {
 
 export class JWT {
     static async authenticate(token: string): Promise<any> {
-        if (!token) {
-            return null;
-        }
-
-        jwt.verify(token, process.env.JWT_SECRET as string, async (ex: any, user: any) => {
-            if (ex) {
-                throw ex;
+        return new Promise((resolve, reject) => {
+            if (!token) {
+                reject("Invalid token.");
             }
 
-            user = await Users.getUser(user.userid);
-            return user;
+            jwt.verify(token, process.env.JWT_SECRET as string, async (ex: any, user: any) => {
+                if (ex) {
+                    reject(ex.message);
+                }
+
+                user = await Users.getUser(user.userid);
+                resolve(user);
+            });
         });
     }
 
