@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import Field from "../components/ui/field";
-import Button from "../components/ui/button";
+import Field from "@/app/components/ui/field";
+import Button from "@/app/components/ui/button";
 
 export default function Register() {
     return (

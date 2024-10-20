@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 
-import Header from "./components/header";
-import Post from "./components/post";
+import Header from "@/app/components/header";
+import Post from "@/app/components/post";
 
 import { Posts } from "@/data/posts";
 import { JWT } from "@/data/users";

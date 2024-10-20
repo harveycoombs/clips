@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "./globals.css";
 
-import Footer from "./components/footer";
+import Footer from "@/app/components/footer";
 
 const inter = Inter({
     weight: ["400", "500", "600", "700", "900"],

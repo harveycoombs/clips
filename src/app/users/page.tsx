@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { Users } from "@/data/users";
-import Header from "../components/header";
+import Header from "@/app/components/header";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHashtag, faFilm, faUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
