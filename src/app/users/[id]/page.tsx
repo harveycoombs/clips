@@ -10,7 +10,7 @@ import { JWT } from "@/data/users";
 import Header from "@/app/components/header";
 
 export default async function IndividualUser(e: any) {
-    let cookieJar = cookies();
+    let cookieJar = await cookies();
     let token = cookieJar.get("token")?.value;
     let currentSessionUser = await JWT.authenticate(token ?? "");
 

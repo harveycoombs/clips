@@ -10,7 +10,7 @@ export default async function Home() {
     let posts = await Posts.getPosts();
     let categories = await Posts.getCategories();
 
-    let cookieJar = cookies();
+    let cookieJar = await cookies();
     let token = cookieJar.get("token")?.value;
     let currentSessionUser = await JWT.authenticate(token ?? "");
 
