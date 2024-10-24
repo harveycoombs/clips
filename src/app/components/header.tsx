@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBorderAll, faUserGroup, faRobot, faMagnifyingGlass, faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { faBorderAll, faUserGroup, faRobot, faMagnifyingGlass, faEllipsis, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 import Button from "@/app/components/ui/button";
 import Field from "@/app/components/ui/field";
@@ -20,11 +20,36 @@ export default function Header({ current, user }: Properties) {
     let [searchAreaIsVisible, setSearchAreaVisibility] = useState<boolean>(false);
     let [uploadPopupIsVisible, setUploadPopupVisibility] = useState<boolean>(false);
 
-    let [completedUploadSteps, setCompletedUploadSteps] = useState<number[]>([]);
+    let uploadSteps = [
+        <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center"><div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button>Browse</Button></div></div>,
+        <div className="w-full h-[500px]">Edit Your Clip</div>,
+        <div className="w-full h-[500px]">Publish Your Video</div>
+    ];
+
+    let [uploaderContent, setUploaderContent] = useState<React.JSX.Element>(uploadSteps[0]);
+    let [completedUploadSteps, setCompletedUploadSteps] = useState<number[]>([1]);
 
     let options = user ? <div><Button classes="inline-block align-middle mr-4" onClick={() => setUploadPopupVisibility(true)}>Upload</Button><HeaderNavigationItem icon={faEllipsis} margin={false} /></div> : <div><Button classes="inline-block align-middle" url="/login">Log In</Button><Button classes="inline-block align-middle ml-1" url="/register" transparent={true}>Register</Button></div>;
     let userAvatar = user ? <Link href={`/users/${user.userid}`} title="View Your Profile" className="inline-block align-middle mx-6 cursor-pointer duration-150 hover:opacity-65"><Image src={`/uploads/avatars/${user.userid}`} alt={`${user.firstname} ${user.lastname}`} width={26} height={26} className="block aspect-square rounded-full object-cover" /></Link> : null;
     
+    function resetUploader() {
+        setUploaderContent(uploadSteps[0]);
+        setCompletedUploadSteps([1]);
+        setUploadPopupVisibility(false);
+    }
+
+    function goForwards() {
+        if (completedUploadSteps.length < 3) {
+            setUploaderContent(uploadSteps[completedUploadSteps.length]);
+            setCompletedUploadSteps(completedUploadSteps.concat([completedUploadSteps.length + 1]));        
+        }
+    }
+    
+    function setStep(n: number) {
+        setCompletedUploadSteps(Array.from({ length: n }, (_, x) => n - x));
+        setUploaderContent(uploadSteps[n - 1]);
+    }
+
     return (
         <>
             <header className="p-3">
@@ -43,13 +68,16 @@ export default function Header({ current, user }: Properties) {
             {searchAreaIsVisible ? <div className="w-[840px] mx-auto">
                 <Field button={{ text: "Search", click: () => alert("Search was performed") }} classes="mb-3" placeholder="Search..." />
             </div>: null}
-            {uploadPopupIsVisible ? <Popup classes="w-[60rem]" title="Upload a Clip" onClose={() => setUploadPopupVisibility(false)}>
+            {uploadPopupIsVisible ? <Popup classes="w-[70rem]" title="Upload a Clip" onClose={resetUploader}>
                 <div className="flex gap-1.5 w-3/4 mx-auto mt-2 mb-4">
-                    <UploadStep number={1} title="Upload" completed={completedUploadSteps.indexOf(1) != -1} classes="rounded-l-full" />
-                    <UploadStep number={2} title="Edit" completed={completedUploadSteps.indexOf(2) != -1} />
-                    <UploadStep number={3} title="Publish" completed={completedUploadSteps.indexOf(3) != -1} classes="rounded-r-full" />
-                </div><div className="w-full h-96 border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center">
-                    <div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button>Browse</Button></div>
+                    <UploadStep number={1} title="Upload" completed={completedUploadSteps.indexOf(1) != -1} classes="rounded-l-full" click={() => setStep(1)} />
+                    <UploadStep number={2} title="Edit" completed={completedUploadSteps.indexOf(2) != -1} click={() => setStep(2)} />
+                    <UploadStep number={3} title="Publish" completed={completedUploadSteps.indexOf(3) != -1} classes="rounded-r-full" click={() => setStep(3)} />
+                </div>
+                {uploaderContent}
+                <div className="flex justify-between items-center mt-4">
+                    <Button classes="bg-red-500 hover:bg-red-600 active:bg-red-700" onClick={resetUploader}>Cancel Upload</Button>
+                    {(completedUploadSteps.length == 3) ? <Button>Publish</Button> : <Button onClick={goForwards}>Next <FontAwesomeIcon icon={faArrowRight} /></Button>}
                 </div>
             </Popup> : null}
         </>
@@ -66,7 +94,7 @@ function UploadStep(props: any) {
     let barAppearance = props.completed ? "bg-indigo-500" : "bg-slate-400 bg-opacity-45";
 
     return (
-        <div className="w-1/3 text-center">
+        <div className="w-1/3 text-center cursor-pointer" onClick={props.click}>
             <strong className={`text-sm select-none ${titleAppearance} font-semibold`}>{props.number}. {props.title}</strong>
             <div className={`h-1.5 w-full ${barAppearance} mt-2${props.classes?.length ? " " + props.classes : ""}`}></div>
         </div>
