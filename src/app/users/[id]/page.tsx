@@ -34,7 +34,7 @@ export default async function IndividualUser(e: any) {
                             <strong className="text-lg font-bold">{fullName}</strong>
                             <div className="text-sm font-medium text-slate-400 text-opacity-60"><FontAwesomeIcon icon={faLocationDot} /> {user.location}</div>
                         </div>
-                    </div><div className="text-xs font-medium text-slate-400 text-opacity-60">
+                    </div><div className="text-[0.825rem] font-medium text-slate-400 text-opacity-60">
                         <div title="Videos" className="mb-1"><FontAwesomeIcon icon={faFilm} /> {0}</div>
                         <div title="Comments" className="mb-1"><FontAwesomeIcon icon={faComments} /> {0}</div>
                         <div title="Comments"><FontAwesomeIcon icon={faCalendarDays} /> {user.creationdate.toLocaleString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" })}</div>

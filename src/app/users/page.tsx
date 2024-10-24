@@ -1,6 +1,7 @@
+import { cookies } from "next/headers";
 import Link from "next/link";
 
-import { Users } from "@/data/users";
+import { Users, JWT } from "@/data/users";
 import Header from "@/app/components/header";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,9 +11,13 @@ export default async function AllUsers() {
     let users = await Users.getUsers();
     let total = await Users.getTotalUsers();
 
+    let cookieJar = await cookies();
+    let token = cookieJar.get("token")?.value;
+    let currentSessionUser = await JWT.authenticate(token ?? "");
+
     return (
         <>
-            <Header current="users" />
+            <Header current="users" user={currentSessionUser} />
             <main className="h-screen w-[840px] mx-auto">
                 <h1 className="block text-lg font-semibold mb-3 select-none">All Users <span className="text-slate-400 text-opacity-60">&ndash; {total}</span></h1>
                 <section>{users.map((user: any) => <User data={user} />)}</section>

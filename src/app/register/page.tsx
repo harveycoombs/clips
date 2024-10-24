@@ -10,9 +10,9 @@ export default function Register() {
                 <section className="w-64">
                     <Link href="/" className="block text-lg text-center select-none font-bold duration-150 hover:opacity-65"><span className="text-indigo-500">clips</span>.harveycoombs.com</Link>
                     <div className="text-sm text-center select-none font-medium text-slate-400 mt-1 mb-8">Create An Account</div>
-<label className="block text-xs font-medium text-slate-400 select-none mt-2.5 mb-1">First Name</label>
+                    <label className="block text-xs font-medium text-slate-400 select-none mt-2.5 mb-1">First Name</label>
                     <Field classes="block w-full" />
-<label className="block text-xs font-medium text-slate-400 select-none mt-2.5 mb-1">Last Name</label>
+                    <label className="block text-xs font-medium text-slate-400 select-none mt-2.5 mb-1">Last Name</label>
                     <Field classes="block w-full" />
                     <label className="block text-xs font-medium text-slate-400 select-none mt-2.5 mb-1">Email Address</label>
                     <Field classes="block w-full" type="email" />                                        <label className="block text-xs font-medium text-slate-400 select-none mt-2.5 mb-1">Password</label>
