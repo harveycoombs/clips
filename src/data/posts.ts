@@ -3,8 +3,11 @@ import { connectionPool } from "./database";
 const pool = connectionPool();
 
 export class Posts {
-    static async getPosts(offset: number=0): Promise<any> {
-        let [result]: any = await pool.query("SELECT postid, publishdate, title FROM posts WHERE deleted = 0 ORDER BY publishdate DESC LIMIT 16 OFFSET ?", [offset]);
+    static async getPosts(offset: number=0, userid=0): Promise<any> {
+        let userFilter = userid ? " AND userid = ?" : "";
+        let params = userid ? [userid, offset] : [offset];
+
+        let [result]: any = await pool.query(`SELECT postid, publishdate, title FROM posts WHERE deleted = 0${userFilter} ORDER BY publishdate DESC LIMIT 16 OFFSET ?`, params);
 
         let connection = await pool.getConnection();
         connection.release();
