@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -20,9 +20,18 @@ export default function Header({ current, user }: Properties) {
     let [searchAreaIsVisible, setSearchAreaVisibility] = useState<boolean>(false);
     let [uploadPopupIsVisible, setUploadPopupVisibility] = useState<boolean>(false);
 
+    let uploader = useRef<HTMLInputElement>(null);
+    let uploadedVideo = useRef<HTMLVideoElement>(null);
+
     let uploadSteps = [
-        <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center"><div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button>Browse</Button></div></div>,
-        <div className="w-full h-[500px]">Edit Your Clip</div>,
+        <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center"><div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div>
+        
+        <input type="file" className="hidden" ref={uploader} onChange={handleUpload} />
+        
+        </div>,
+        <div className="w-full h-[500px]"><div>
+        <video ref={uploadedVideo} className="block rounded-md w-[800px] aspect-video"></video>
+        </div></div>,
         <div className="w-full h-[500px]">Publish Your Video</div>
     ];
 
@@ -31,7 +40,20 @@ export default function Header({ current, user }: Properties) {
 
     let options = user ? <div><Button classes="inline-block align-middle mr-4" onClick={() => setUploadPopupVisibility(true)}>Upload</Button><HeaderNavigationItem icon={faEllipsis} margin={false} /></div> : <div><Button classes="inline-block align-middle" url="/login">Log In</Button><Button classes="inline-block align-middle ml-1" url="/register" transparent={true}>Register</Button></div>;
     let userAvatar = user ? <Link href={`/users/${user.userid}`} title="View Your Profile" className="inline-block align-middle mx-6 cursor-pointer duration-150 hover:opacity-65"><Image src={`/uploads/avatars/${user.userid}`} alt={`${user.firstname} ${user.lastname}`} width={26} height={26} className="block aspect-square rounded-full object-cover" /></Link> : null;
-    
+
+    function handleUpload(e: any) {
+        let upload = e.target.files[0];
+
+        let reader = new FileReader();
+        
+        reader.addEventListener("load", () => {
+            setStep(2);
+            if (uploadedVideo?.current) uploadedVideo.current.setAttribute("src", reader.result?.toString() ?? "");
+        });
+
+        reader.readAsDataURL(upload);
+    }
+
     function resetUploader() {
         setUploaderContent(uploadSteps[0]);
         setCompletedUploadSteps([1]);
