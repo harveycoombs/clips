@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBorderAll, faUserGroup, faRobot, faMagnifyingGlass, faEllipsis, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faBorderAll, faUserGroup, faRobot, faMagnifyingGlass, faEllipsis, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 import Button from "@/app/components/ui/button";
 import Field from "@/app/components/ui/field";
@@ -31,8 +31,23 @@ export default function Header({ current, user }: Properties) {
     let [uploaderContent, setUploaderContent] = useState<React.JSX.Element>(uploadSteps[0]);
     let [completedUploadSteps, setCompletedUploadSteps] = useState<number[]>([1]);
 
+    let trimmerContainer = useRef<HTMLDivElement>(null);
+    let trimmerBar = useRef<HTMLDivElement>(null);
+
+    let [leftTrimIsActive, setLeftTrimState] = useState<boolean>(false);
+    let [rightTrimIsActive, setRightTrimState] = useState<boolean>(false);
+    
     let options = user ? <div><Button classes="inline-block align-middle mr-4" onClick={() => setUploadPopupVisibility(true)}>Upload</Button><HeaderNavigationItem icon={faEllipsis} margin={false} /></div> : <div><Button classes="inline-block align-middle" url="/login">Log In</Button><Button classes="inline-block align-middle ml-1" url="/register" transparent={true}>Register</Button></div>;
     let userAvatar = user ? <Link href={`/users/${user.userid}`} title="View Your Profile" className="inline-block align-middle mx-6 cursor-pointer duration-150 hover:opacity-65"><Image src={`/uploads/avatars/${user.userid}`} alt={`${user.firstname} ${user.lastname}`} width={26} height={26} className="block aspect-square rounded-full object-cover" /></Link> : null;
+
+    function trim(e: any) {
+        if ((!leftTrimIsActive && !rightTrimIsActive) || !trimmerContainer?.current || !trimmerBar?.current) return;
+
+        let position = e.clientX - trimmerContainer.current?.offsetLeft;
+        if (position >= trimmerContainer.current.clientWidth) return;
+
+        trimmerBar.current.setAttribute("style", `width: ${trimmerContainer.current.clientWidth - position}px; left: ${position}px;`);
+    }
 
     function handleUpload(e: any) {
         let upload = e.target.files[0];
@@ -40,9 +55,15 @@ export default function Header({ current, user }: Properties) {
         let reader = new FileReader();
         
         reader.addEventListener("load", () => {
-            uploadSteps[1] = <div className="w-full h-[500px]"><div>
-            <video src={reader.result?.toString()} className="block rounded-md h-[400px] w-auto aspect-video"></video>
-            </div></div>;
+            uploadSteps[1] = <div className="w-fit mx-auto flex flex-col items-center justify-center h-[500px]">
+                <video src={reader.result?.toString()} className="block bg-slate-50 rounded-md h-[440px] w-auto aspect-video overflow-hidden" controls></video>
+                <div className="w-full box-border h-12 mt-5 bg-slate-100 rounded-md" ref={trimmerContainer} onMouseMove={trim}>
+                    <div className="border-indigo-500 bg-indigo-200 border-solid border-2 rounded-md h-full min-w-3 relative" ref={trimmerBar}>
+                        <div className="w-3 absolute top-0 bottom-0 left-0 cursor-pointer grid place-items-center pl-2" onMouseDown={() => setLeftTrimState(true)} onMouseUp={() => setLeftTrimState(false)}><FontAwesomeIcon icon={faChevronLeft} className="text-indigo-500" /></div>
+                        <div className="w-3 absolute top-0 bottom-0 right-0 cursor-pointer grid place-items-center pr-4" onMouseDown={() => setRightTrimState(true)} onMouseUp={() => setRightTrimState(false)}><FontAwesomeIcon icon={faChevronRight} className="text-indigo-500" /></div>
+                    </div>
+                </div>
+            </div>;
 
             setStep(2);
         });
