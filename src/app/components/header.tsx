@@ -11,6 +11,8 @@ import Button from "@/app/components/ui/button";
 import Field from "@/app/components/ui/field";
 import Popup from "@/app/components/ui/popup";
 
+import { Utils } from "@/data/utils";
+
 interface Properties {
     current: string;
     user?: any;
@@ -23,7 +25,7 @@ export default function Header({ current, user }: Properties) {
     let uploader = useRef<HTMLInputElement>(null);
 
     let uploadSteps = [
-        <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center"><div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div><input type="file" className="hidden" ref={uploader} onChange={handleUpload} /></div>,
+        <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center"><div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div><input type="file" accept="video/mp4,video/x-m4v,video/*" className="hidden" ref={uploader} onChange={handleUpload} /></div>,
         <div className="w-full h-[500px] grid place-items-center"><strong className="text-amber-500 font-medium">Please upload a video to continue</strong></div>,
         <div className="w-full h-[500px]">Publish Your Video</div>
     ];
@@ -52,12 +54,18 @@ export default function Header({ current, user }: Properties) {
     function handleUpload(e: any) {
         let upload = e.target.files[0];
 
+        if (!upload.type.startsWith("video")) {
+            setStep(2);
+            return;
+        }
+
         let reader = new FileReader();
         
         reader.addEventListener("load", () => {
             uploadSteps[1] = <div className="w-fit mx-auto flex flex-col items-center justify-center h-[500px]">
-                <video src={reader.result?.toString()} className="block bg-slate-50 rounded-md h-[440px] w-auto aspect-video overflow-hidden" controls></video>
-                <div className="w-full box-border h-12 mt-5 bg-slate-100 rounded-md" ref={trimmerContainer} onMouseMove={trim}>
+                <div className="flex justify-between items-center mb-2"><strong>{upload.name} <span className="text-slate-400 text-opacity-60">&ndash; {Utils.formatBytes(upload.size)}</span></strong></div>
+                <video src={reader.result?.toString()} className="block bg-slate-50 rounded-md h-[420px] w-auto aspect-video overflow-hidden" controls></video>
+                <div className="w-full box-border h-10 mt-2 bg-slate-100 rounded-md" ref={trimmerContainer} onMouseMove={trim}>
                     <div className="border-indigo-500 bg-indigo-200 border-solid border-2 rounded-md h-full min-w-3 relative" ref={trimmerBar}>
                         <div className="w-3 absolute top-0 bottom-0 left-0 cursor-pointer grid place-items-center pl-2" onMouseDown={() => setLeftTrimState(true)} onMouseUp={() => setLeftTrimState(false)}><FontAwesomeIcon icon={faChevronLeft} className="text-indigo-500" /></div>
                         <div className="w-3 absolute top-0 bottom-0 right-0 cursor-pointer grid place-items-center pr-4" onMouseDown={() => setRightTrimState(true)} onMouseUp={() => setRightTrimState(false)}><FontAwesomeIcon icon={faChevronRight} className="text-indigo-500" /></div>
