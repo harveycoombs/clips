@@ -25,7 +25,7 @@ export default function Header({ current, user }: Properties) {
     let uploader = useRef<HTMLInputElement>(null);
 
     let uploadSteps = [
-        <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center"><div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div><input type="file" accept="video/mp4,video/x-m4v,video/*" className="hidden" ref={uploader} onChange={handleUpload} /></div>,
+        <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragOverEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}><div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div><input type="file" accept="video/mp4,video/x-m4v,video/*" className="hidden" ref={uploader} onChange={handleUpload} /></div>,
         <div className="w-full h-[500px] grid place-items-center"><strong className="text-amber-500 font-medium">Please upload a video to continue</strong></div>,
         <div className="w-full h-[500px]">Publish Your Video</div>
     ];
@@ -88,6 +88,39 @@ export default function Header({ current, user }: Properties) {
     function setStep(n: number) {
         setCompletedUploadSteps(Array.from({ length: n }, (_, x) => n - x));
         setUploaderContent(uploadSteps[n - 1]);
+    }
+
+    function handleDragOverEvent(e: any) {
+        e.preventDefault();
+
+        e.target.classList.remove("border-slate-400", "border-opacity-40");
+        e.target.classList.add("border-indigo-500", "bg-indigo-50");
+
+        let uploaderMessage = e.target.querySelector("div > span");
+        
+        uploaderMessage.classList.remove("text-slate-400", "text-opacity-65");
+        uploaderMessage.classList.add("text-indigo-500");
+    }
+    
+    function handleDragLeaveEvent(e: any) {
+        e.target.classList.remove("border-indigo-500", "bg-indigo-50");
+        e.target.classList.add("border-slate-400", "border-opacity-40");
+    
+        let uploaderMessage = e.target.querySelector("div > span");
+
+        uploaderMessage.classList.remove("text-indigo-500");
+        uploaderMessage.classList.add("text-slate-400", "text-opacity-65");
+    }
+
+    function handleDropEvent(e: any) {
+        e.preventDefault();
+
+        if (uploader.current) {
+            uploader.current.files = e.dataTransfer.files;
+            uploader.current.dispatchEvent(new Event("change", { bubbles: true }));
+
+            handleDragLeaveEvent(e);
+        }
     }
 
     return (
