@@ -21,17 +21,10 @@ export default function Header({ current, user }: Properties) {
     let [uploadPopupIsVisible, setUploadPopupVisibility] = useState<boolean>(false);
 
     let uploader = useRef<HTMLInputElement>(null);
-    let uploadedVideo = useRef<HTMLVideoElement>(null);
 
     let uploadSteps = [
-        <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center"><div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div>
-        
-        <input type="file" className="hidden" ref={uploader} onChange={handleUpload} />
-        
-        </div>,
-        <div className="w-full h-[500px]"><div>
-        <video ref={uploadedVideo} className="block rounded-md w-[800px] aspect-video"></video>
-        </div></div>,
+        <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center"><div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div><input type="file" className="hidden" ref={uploader} onChange={handleUpload} /></div>,
+        <div className="w-full h-[500px] grid place-items-center"><strong className="text-amber-500 font-medium">Please upload a video to continue</strong></div>,
         <div className="w-full h-[500px]">Publish Your Video</div>
     ];
 
@@ -47,8 +40,11 @@ export default function Header({ current, user }: Properties) {
         let reader = new FileReader();
         
         reader.addEventListener("load", () => {
+            uploadSteps[1] = <div className="w-full h-[500px]"><div>
+            <video src={reader.result?.toString()} className="block rounded-md h-[400px] w-auto aspect-video"></video>
+            </div></div>;
+
             setStep(2);
-            if (uploadedVideo?.current) uploadedVideo.current.setAttribute("src", reader.result?.toString() ?? "");
         });
 
         reader.readAsDataURL(upload);
@@ -60,13 +56,6 @@ export default function Header({ current, user }: Properties) {
         setUploadPopupVisibility(false);
     }
 
-    function goForwards() {
-        if (completedUploadSteps.length < 3) {
-            setUploaderContent(uploadSteps[completedUploadSteps.length]);
-            setCompletedUploadSteps(completedUploadSteps.concat([completedUploadSteps.length + 1]));        
-        }
-    }
-    
     function setStep(n: number) {
         setCompletedUploadSteps(Array.from({ length: n }, (_, x) => n - x));
         setUploaderContent(uploadSteps[n - 1]);
@@ -99,7 +88,7 @@ export default function Header({ current, user }: Properties) {
                 {uploaderContent}
                 <div className="flex justify-between items-center mt-4">
                     <Button classes="bg-red-500 hover:bg-red-600 active:bg-red-700" onClick={resetUploader}>Cancel Upload</Button>
-                    {(completedUploadSteps.length == 3) ? <Button>Publish</Button> : <Button onClick={goForwards}>Next <FontAwesomeIcon icon={faArrowRight} /></Button>}
+                    <Button classes={(completedUploadSteps.length < 3) ? "opacity-60 pointer-events-none" : ""} disabled={completedUploadSteps.length < 3}>Publish</Button>
                 </div>
             </Popup> : null}
         </>
