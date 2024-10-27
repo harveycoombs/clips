@@ -91,7 +91,7 @@ export default function Header({ current, user }: Properties) {
     }
 
     function setStep(n: number) {
-        if (n == 3) setPublishSection();
+        if (n == 3) setPublishSection("");
 
         setCompletedUploadSteps(Array.from({ length: n }, (_, x) => n - x));
         setUploaderContent(uploadSteps[n - 1]);
@@ -167,10 +167,10 @@ export default function Header({ current, user }: Properties) {
         request.send(files);
     }
 
-    function setPublishSection() {
+    function setPublishSection(data: string) {
         uploadSteps[2] = <div className="w-full h-[500px] flex gap-8">
             <div className="w-1/2">
-
+                <video src={data}></video>
             </div>
             <div className="w-1/2">
                 <Label classes="w-full">Title</Label>
