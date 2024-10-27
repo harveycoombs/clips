@@ -38,6 +38,9 @@ export default function Header({ current, user }: Properties) {
 
     let [leftTrimIsActive, setLeftTrimState] = useState<boolean>(false);
     let [rightTrimIsActive, setRightTrimState] = useState<boolean>(false);
+
+    let progressBar = useRef<HTMLProgressElement>(null);
+    let percentageLabel = useRef<HTMLElement>(null);
     
     let options = user ? <div><Button classes="inline-block align-middle mr-4" onClick={() => setUploadPopupVisibility(true)}>Upload</Button><HeaderNavigationItem icon={faEllipsis} margin={false} /></div> : <div><Button classes="inline-block align-middle" url="/login">Log In</Button><Button classes="inline-block align-middle ml-1" url="/register" transparent={true}>Register</Button></div>;
     let userAvatar = user ? <Link href={`/users/${user.userid}`} title="View Your Profile" className="inline-block align-middle mx-6 cursor-pointer duration-150 hover:opacity-65"><Image src={`/uploads/avatars/${user.userid}`} alt={`${user.firstname} ${user.lastname}`} width={26} height={26} className="block aspect-square rounded-full object-cover" /></Link> : null;
@@ -123,6 +126,44 @@ export default function Header({ current, user }: Properties) {
         }
     }
 
+    function updateProgressBar(e: any) {
+        if (!e.lengthComputable) return;
+    
+        let progress = (e.loaded / e.total) * 100;
+    
+        if (progressBar.current && percentageLabel.current) {
+            progressBar.current.value = progress;
+            progressBar.current.innerHTML = `${Math.round(progress)}&percnt;`;
+            percentageLabel.current.innerHTML = `${Math.round(progress)}&percnt; COMPLETE`;
+        }
+    }
+
+    function publish(uploads: any[]) {
+        //<strong className="block text-xl text-center font-extrabold select-none" ref={percentageLabel}>0&percnt; Complete</strong>
+        //<progress className="appearance-none w-96 h-3 mt-8 bg-slate-200 border-none rounded duration-150" max="100" value="0" ref={progressBar}></progress>
+
+        let files = new FormData();
+        for (let file of uploads) files.append("files", file);
+
+        let request = new XMLHttpRequest();
+    
+        request.open("POST", "/api/upload", true);
+        request.responseType = "json";
+    
+        request.upload.addEventListener("progress", updateProgressBar);
+
+        request.addEventListener("readystatechange", (e: any) => {
+            if (e.target.readyState != 4) return;
+
+            switch (e.target.status) {
+                default:
+                    break;
+            }
+        });
+
+        request.send(files);
+    }
+
     return (
         <>
             <header className="p-3">
@@ -150,7 +191,7 @@ export default function Header({ current, user }: Properties) {
                 {uploaderContent}
                 <div className="flex justify-between items-center mt-4">
                     <Button classes="bg-red-500 hover:bg-red-600 active:bg-red-700" onClick={resetUploader}>Cancel Upload</Button>
-                    <Button classes={(completedUploadSteps.length < 3) ? "opacity-60 pointer-events-none" : ""} disabled={completedUploadSteps.length < 3}>Publish</Button>
+                    <Button classes={(completedUploadSteps.length < 3) ? "opacity-60 pointer-events-none" : ""} disabled={completedUploadSteps.length < 3} click={publish}>Publish</Button>
                 </div>
             </Popup> : null}
         </>
