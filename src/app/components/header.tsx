@@ -43,6 +43,8 @@ export default function Header({ current, user }: Properties) {
 
     let progressBar = useRef<HTMLProgressElement>(null);
     let percentageLabel = useRef<HTMLElement>(null);
+
+    let uploadedVideo = useRef<HTMLVideoElement>(null);
     
     let options = user ? <div><Button classes="inline-block align-middle mr-4" onClick={() => setUploadPopupVisibility(true)}>Upload</Button><HeaderNavigationItem icon={faEllipsis} margin={false} /></div> : <div><Button classes="inline-block align-middle" url="/login">Log In</Button><Button classes="inline-block align-middle ml-1" url="/register" transparent={true}>Register</Button></div>;
     let userAvatar = user ? <Link href={`/users/${user.userid}`} title="View Your Profile" className="inline-block align-middle mx-6 cursor-pointer duration-150 hover:opacity-65"><Image src={`/uploads/avatars/${user.userid}`} alt={`${user.firstname} ${user.lastname}`} width={26} height={26} className="block aspect-square rounded-full object-cover" /></Link> : null;
@@ -69,7 +71,7 @@ export default function Header({ current, user }: Properties) {
         reader.addEventListener("load", () => {
             uploadSteps[1] = <div className="w-fit mx-auto flex flex-col items-center justify-center h-[500px]">
                 <div className="flex justify-between items-center mb-2"><strong>{upload.name} <span className="text-slate-400 text-opacity-60">&ndash; {Utils.formatBytes(upload.size)}</span></strong></div>
-                <video src={reader.result?.toString()} className="block bg-slate-50 rounded-md h-[420px] w-auto aspect-video overflow-hidden" controls></video>
+                <video src={reader.result?.toString()} ref={uploadedVideo} className="block bg-slate-50 rounded-md h-[420px] w-auto aspect-video overflow-hidden" controls></video>
                 <div className="w-full box-border h-10 mt-2 bg-slate-100 rounded-md" ref={trimmerContainer} onMouseMove={trim}>
                     <div className="border-indigo-500 bg-indigo-200 border-solid border-2 rounded-md h-full min-w-3 relative" ref={trimmerBar}>
                         <div className="w-3 absolute top-0 bottom-0 left-0 cursor-pointer grid place-items-center pl-2" onMouseDown={() => setLeftTrimState(true)} onMouseUp={() => setLeftTrimState(false)}><FontAwesomeIcon icon={faChevronLeft} className="text-indigo-500" /></div>
@@ -91,8 +93,6 @@ export default function Header({ current, user }: Properties) {
     }
 
     function setStep(n: number) {
-        if (n == 3) setPublishSection("");
-
         setCompletedUploadSteps(Array.from({ length: n }, (_, x) => n - x));
         setUploaderContent(uploadSteps[n - 1]);
     }
@@ -167,7 +167,9 @@ export default function Header({ current, user }: Properties) {
         request.send(files);
     }
 
-    function setPublishSection(data: string) {
+    function showPublishSection() {
+        let data = uploadedVideo?.current?.src;
+
         uploadSteps[2] = <div className="w-full h-[500px] flex gap-8">
             <div className="w-1/2">
                 <video src={data}></video>
@@ -181,6 +183,8 @@ export default function Header({ current, user }: Properties) {
                 <TextBox classes="w-full min-h-20 max-h-86 rounded-xl resize-horizontal" rows="6" />
             </div>
         </div>;
+
+        setStep(3);
     }
 
     return (
@@ -210,7 +214,9 @@ export default function Header({ current, user }: Properties) {
                 {uploaderContent}
                 <div className="flex justify-between items-center mt-4">
                     <Button classes="bg-red-500 hover:bg-red-600 active:bg-red-700" onClick={resetUploader}>Cancel Upload</Button>
-                    <Button classes={(completedUploadSteps.length < 3) ? "opacity-60 pointer-events-none" : ""} disabled={completedUploadSteps.length < 3} click={publish}>Publish</Button>
+
+                    {(completedUploadSteps.length == 3) ? <Button click={publish}>Publish</Button> : <Button click={showPublishSection}>Continue</Button>}
+                    
                 </div>
             </Popup> : null}
         </>
