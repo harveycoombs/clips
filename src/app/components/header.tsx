@@ -9,6 +9,8 @@ import { faBorderAll, faUserGroup, faRobot, faMagnifyingGlass, faEllipsis, faChe
 
 import Button from "@/app/components/ui/button";
 import Field from "@/app/components/ui/field";
+import TextBox from "@/app/components/ui/textbox";
+import Label from "@/app/components/ui/label";
 import Popup from "@/app/components/ui/popup";
 
 import { Utils } from "@/data/utils";
@@ -89,6 +91,8 @@ export default function Header({ current, user }: Properties) {
     }
 
     function setStep(n: number) {
+        if (n == 3) setPublishSection();
+
         setCompletedUploadSteps(Array.from({ length: n }, (_, x) => n - x));
         setUploaderContent(uploadSteps[n - 1]);
     }
@@ -139,8 +143,7 @@ export default function Header({ current, user }: Properties) {
     }
 
     function publish(uploads: any[]) {
-        //<strong className="block text-xl text-center font-extrabold select-none" ref={percentageLabel}>0&percnt; Complete</strong>
-        //<progress className="appearance-none w-96 h-3 mt-8 bg-slate-200 border-none rounded duration-150" max="100" value="0" ref={progressBar}></progress>
+        uploadSteps[2] = <div className="w-full h-[500px] grid place-items-center"><strong className="block text-xl text-center font-extrabold select-none" ref={percentageLabel}>0&percnt; Complete</strong><progress className="appearance-none w-96 h-3 mt-8 bg-slate-200 border-none rounded duration-150" max="100" value="0" ref={progressBar}></progress></div>;
 
         let files = new FormData();
         for (let file of uploads) files.append("files", file);
@@ -164,10 +167,26 @@ export default function Header({ current, user }: Properties) {
         request.send(files);
     }
 
+    function setPublishSection() {
+        uploadSteps[2] = <div className="w-full h-[500px] flex gap-8">
+            <div className="w-1/2">
+
+            </div>
+            <div className="w-1/2">
+                <Label classes="w-full">Title</Label>
+                <Field classes="w-full" />
+                <Label classes="w-full">Category</Label>
+                <Field classes="w-full" />
+                <Label classes="w-full">Description</Label>
+                <TextBox classes="w-full min-h-20 max-h-86 rounded-xl resize-horizontal" rows="6" />
+            </div>
+        </div>;
+    }
+
     return (
         <>
             <header className="p-3">
-                <div className="w-[840px] mx-auto flex justify-between items-center">
+                <div className="w-[840px] mx-auto flex justify-between items-center h-">
                     <Link href="/" className="font-bold text-slate-800 select-none duration-150 hover:opacity-65" draggable="false"><span className="text-indigo-500">clips</span>.harveycoombs.com</Link>
                     <nav>
                         <HeaderNavigationItem icon={faBorderAll} url="/" selected={current == "feed"} margin={true} />
