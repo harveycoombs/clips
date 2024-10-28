@@ -29,3 +29,10 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return response;
 }
+
+export async function DELETE(): Promise<NextResponse> {
+    let response = NextResponse.json({ success: true }, { status: 200 });
+    response.cookies.delete("token");
+
+    return response;
+}

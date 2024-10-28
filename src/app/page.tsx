@@ -12,7 +12,7 @@ export default async function Home() {
 
     let cookieJar = await cookies();
     let token = cookieJar.get("token")?.value;
-    let currentSessionUser = await JWT.authenticate(token ?? "");
+    let currentSessionUser = token?.length ? await JWT.authenticate(token) : null;
 
     return (
         <>
