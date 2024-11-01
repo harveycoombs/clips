@@ -27,6 +27,7 @@ export default function Header({ current, user }: Properties) {
     let [optionsAreVisible, setOptionsVisibility] = useState<boolean>(false);
 
     let uploader = useRef<HTMLInputElement>(null);
+    let [uploadedFile, setUploadedFile] = useState<File|null>(null);
 
     let uploadSteps = [
         <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragOverEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}><div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div><input type="file" accept="video/mp4,video/x-m4v,video/*" className="hidden" ref={uploader} onChange={handleUpload} /></div>,
@@ -78,6 +79,8 @@ export default function Header({ current, user }: Properties) {
             setStep(2);
             return;
         }
+
+        setUploadedFile(upload);
 
         let reader = new FileReader();
         
@@ -155,37 +158,39 @@ export default function Header({ current, user }: Properties) {
         }
     }
 
-    function publish(uploads: any[]) {
+    async function publish() {
+        if (!uploadedFile) return;
+
         uploadSteps[2] = <div className="w-full h-[500px] grid place-items-center"><strong className="block text-xl text-center font-extrabold select-none" ref={percentageLabel}>0&percnt; Complete</strong><progress className="appearance-none w-96 h-3 mt-8 bg-slate-200 border-none rounded duration-150" max="100" value="0" ref={progressBar}></progress></div>;
 
-        let files = new FormData();
-        for (let file of uploads) files.append("files", file);
+        let data = new FormData();
 
-        let request = new XMLHttpRequest();
-    
-        request.open("POST", "/api/upload", true);
-        request.responseType = "json";
-    
-        request.upload.addEventListener("progress", updateProgressBar);
+        data.set("file", uploadedFile);
+        data.set("title", "Test Post");
+        data.set("description", "This is the description.");
+        data.set("category", "Random");
 
-        request.addEventListener("readystatechange", (e: any) => {
-            if (e.target.readyState != 4) return;
-
-            switch (e.target.status) {
-                default:
-                    break;
-            }
+        let response = await fetch("/api/upload", {
+            method: "POST",
+            body: data
         });
 
-        request.send(files);
+        if (!response.ok) {
+            alert("Something went wrong.");
+            return;
+        }
+
+        let json = await response.json();
+
+        window.location.href = `/posts/${json.id}`;
     }
 
     function showPublishSection() {
         let data = uploadedVideo?.current?.src;
 
         uploadSteps[2] = <div className="w-full h-[500px] flex gap-8">
-            <div className="w-1/2">
-                <video src={data}></video>
+            <div className="w-1/2 bg-slate-50 rounded-md">
+                <video src={data} className="h-full mx-auto"></video>
             </div>
             <div className="w-1/2">
                 <Label classes="w-full">Title</Label>
@@ -228,7 +233,7 @@ export default function Header({ current, user }: Properties) {
                 <div className="flex justify-between items-center mt-4">
                     <Button classes="bg-red-500 hover:bg-red-600 active:bg-red-700" onClick={resetUploader}>Cancel Upload</Button>
 
-                    {(completedUploadSteps.length == 3) ? <Button click={publish}>Publish</Button> : <Button click={showPublishSection}>Continue</Button>}
+                    {(completedUploadSteps.length == 3) ? <Button onClick={publish}>Publish</Button> : <Button onClick={showPublishSection}>Continue</Button>}
                     
                 </div>
             </Popup> : null}

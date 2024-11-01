@@ -30,7 +30,7 @@ export class Posts {
         let connection = await pool.getConnection();
         connection.release();
 
-        return result[0];
+        return result?.insertId ?? 0;
     }
 
     static async getCategories(): Promise<any[]> {

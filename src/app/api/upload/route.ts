@@ -1,7 +1,10 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+
 import * as fs from "fs/promises";
 
 import { Posts } from "@/data/posts";
+import { JWT } from "@/data/users";
 
 export async function POST(request: Request): Promise<NextResponse> {
     let data = await request.formData();
@@ -10,7 +13,11 @@ export async function POST(request: Request): Promise<NextResponse> {
     
     if (!file || !(file instanceof File)) return NextResponse.json({ error: "No file was uploaded." }, { status: 400 });
 
-    let userid = parseInt(data.get("userid")?.toString() ?? "0");
+    let cookieJar = await cookies();
+    let token = cookieJar.get("token")?.value;
+    let currentSessionUser = token?.length ? await JWT.authenticate(token) : null;
+
+    let userid = currentSessionUser.userid;
     let title = data.get("title")?.toString();
     let description = data.get("description")?.toString() ?? "";
     let category = data.get("category")?.toString() ?? "";
@@ -18,7 +25,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (!userid) return NextResponse.json({ error: "Invalid user ID." }, { status: 400 });
     if (!title?.length) return NextResponse.json({ error: "Invalid title." }, { status: 400 });
 
-    let id = Posts.createPost(userid, title, description, category);
+    let id = await Posts.createPost(userid, title, description, category);
 
     try {
         await fs.mkdir(`./uploads/posts/${id}`);
