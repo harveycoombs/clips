@@ -48,11 +48,13 @@ export default function Header({ current, user }: Properties) {
     let percentageLabel = useRef<HTMLElement>(null);
 
     let uploadedVideo = useRef<HTMLVideoElement>(null);
+
+    let [postTitle, setPostTitle] = useState<string>("");
+    let [postCategory, setPostCategory] = useState<string>("");
+    let [postDescription, setPostDescription] = useState<string>("");
     
     let accountOptions = optionsAreVisible ? <div className="w-full absolute top-[120%] border-[1px] border-slate-400 border-opacity-60 rounded-md overflow-hidden select-none"><Link href="/settings" className="block px-2 py-1 text-[0.825rem] font-medium cursor-pointer bg-white hover:bg-slate-50 active:bg-slate-100">Settings</Link><div className="block px-2 py-1 border-t-[1px] border-slate-400 border-opacity-60 text-[0.825rem] text-red-500 font-medium cursor-pointer bg-white hover:bg-slate-50 active:bg-slate-100" onClick={logout}>Log Out</div></div> : null;
-
     let options = user ? <div className="relative"><Button classes="inline-block align-middle mr-4" onClick={() => setUploadPopupVisibility(true)}>Upload</Button><HeaderNavigationItem icon={faEllipsis} margin={false} click={() => setOptionsVisibility(!optionsAreVisible)} />{accountOptions}</div> : <div><Button classes="inline-block align-middle" url="/login">Log In</Button><Button classes="inline-block align-middle ml-1" url="/register" transparent={true}>Register</Button></div>;
-
     let userAvatar = user ? <Link href={`/users/${user.userid}`} title="View Your Profile" className="inline-block align-middle mx-6 cursor-pointer duration-150 hover:opacity-65"><Image src={`/uploads/avatars/${user.userid}`} alt={`${user.firstname} ${user.lastname}`} width={26} height={26} className="block aspect-square rounded-full object-cover" /></Link> : null;
 
     async function logout() {
@@ -146,29 +148,18 @@ export default function Header({ current, user }: Properties) {
         }
     }
 
-    function updateProgressBar(e: any) {
-        if (!e.lengthComputable) return;
-    
-        let progress = (e.loaded / e.total) * 100;
-    
-        if (progressBar.current && percentageLabel.current) {
-            progressBar.current.value = progress;
-            progressBar.current.innerHTML = `${Math.round(progress)}&percnt;`;
-            percentageLabel.current.innerHTML = `${Math.round(progress)}&percnt; COMPLETE`;
-        }
-    }
-
     async function publish() {
         if (!uploadedFile) return;
 
-        uploadSteps[2] = <div className="w-full h-[500px] grid place-items-center"><strong className="block text-xl text-center font-extrabold select-none" ref={percentageLabel}>0&percnt; Complete</strong><progress className="appearance-none w-96 h-3 mt-8 bg-slate-200 border-none rounded duration-150" max="100" value="0" ref={progressBar}></progress></div>;
+        uploadSteps[2] = <div className="w-full h-[500px] grid place-items-center"><strong className="block text-xl text-center text-slate-400 font-semibold select-none" ref={percentageLabel}>Publishing...</strong></div>;
+        setStep(3);
 
         let data = new FormData();
 
         data.set("file", uploadedFile);
-        data.set("title", "Test Post");
-        data.set("description", "This is the description.");
-        data.set("category", "Random");
+        data.set("title", postTitle);
+        data.set("description", postDescription);
+        data.set("category", postCategory);
 
         let response = await fetch("/api/upload", {
             method: "POST",
@@ -181,7 +172,6 @@ export default function Header({ current, user }: Properties) {
         }
 
         let json = await response.json();
-
         window.location.href = `/posts/${json.id}`;
     }
 
@@ -194,11 +184,11 @@ export default function Header({ current, user }: Properties) {
             </div>
             <div className="w-1/2">
                 <Label classes="w-full">Title</Label>
-                <Field classes="w-full" />
+                <Field classes="w-full" onInput={(e: any) => setPostTitle(e.target.value)} />
                 <Label classes="w-full">Category</Label>
-                <Field classes="w-full" />
+                <Field classes="w-full" onInput={(e: any) => setPostCategory(e.target.value)} />
                 <Label classes="w-full">Description</Label>
-                <TextBox classes="w-full min-h-20 max-h-86 rounded-xl resize-horizontal" rows="6" />
+                <TextBox classes="w-full min-h-20 max-h-86 rounded-xl resize-horizontal" rows="6" onInput={(e: any) => setPostDescription(e.target.value)} />
             </div>
         </div>;
 
