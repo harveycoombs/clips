@@ -5,7 +5,7 @@ import Field from "@/app/components/ui/field";
 import Label from "@/app/components/ui/label";
 import Button from "@/app/components/ui/button";
 
-export default function Home() {
+export default function LoginForm() {
     let [email, setEmail] = useState<string>("");
     let [password, setPassword] = useState<string>("");
 
@@ -25,7 +25,7 @@ export default function Home() {
             let response = await fetch("/api/sessions", {
                 method: "POST",
                 body: credentials
-            })
+            });
 
             let json = await response.json();
 

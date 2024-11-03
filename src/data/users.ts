@@ -17,16 +17,28 @@ export class Users {
 
     static async getUser(identifier: number|string): Promise<any> {
         let field = (typeof identifier == "number") ? "userid" : "email";
+
         let [result]: any = await pool.query(`SELECT userid, creationdate, firstname, lastname, biography, location FROM users WHERE ${field} = ? AND deleted = 0`, [identifier]);
+        
+        console.log(`SELECT userid, creationdate, firstname, lastname, biography, location FROM users WHERE ${field} = ? AND deleted = 0`, [identifier]);
 
         let connection = await pool.getConnection();
         connection.release();
 
+        console.log(result);
+
         return result[0];
     }
 
-    static async getUserDetails(): Promise<any> {
-        let result = await pool.query("");
+    static async createUser(firstName: string, lastName: string, email: string, password: string): Promise<number> {
+        let passwordHash = await Passwords.generateHash(password);
+
+        let [result]: any = await pool.query("INSERT INTO users (creationdate, firstname, lastname, email, password) VALUES((SELECT NOW()), ?, ?, ?, ?)", [firstName, lastName, email, passwordHash]);
+
+        let connection = await pool.getConnection();
+        connection.release();
+
+        return result?.insertId ?? 0;
     }
 
     static async getTotalUsers(): Promise<number> {
@@ -56,6 +68,15 @@ export class Users {
 
         let valid = await Passwords.verify(password, hash);
         return valid;
+    }
+
+    static async emailExists(email: string): Promise<boolean> {
+        let [result]: any = await pool.query("SELECT COUNT(*) AS total FROM users WHERE email = ?", [email]);
+
+        let connection = await pool.getConnection();
+        connection.release();
+
+        return result[0].total;
     }
 }
 

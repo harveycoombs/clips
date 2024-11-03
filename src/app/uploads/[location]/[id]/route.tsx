@@ -3,7 +3,7 @@ import fs from "fs/promises";
 import mime from "mime";
 
 export async function GET(_: any, { params }: any) {
-    let { location, id } = params;
+    let { location, id } = await params;
     let files: string[] = [];
 
     try {
