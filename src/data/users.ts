@@ -19,8 +19,6 @@ export class Users {
         let field = (typeof identifier == "number") ? "userid" : "email";
 
         let [result]: any = await pool.query(`SELECT userid, creationdate, firstname, lastname, biography, location FROM users WHERE ${field} = ? AND deleted = 0`, [identifier]);
-        
-        console.log(`SELECT userid, creationdate, firstname, lastname, biography, location FROM users WHERE ${field} = ? AND deleted = 0`, [identifier]);
 
         let connection = await pool.getConnection();
         connection.release();
