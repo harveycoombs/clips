@@ -9,6 +9,15 @@ export async function GET(_: any, { params }: any) {
     try {
         files = await fs.readdir(`./uploads/${location}/${id}`);
     } catch {
+        if (location == "avatars") {
+            let content = await fs.readFile("./public/images/default.png");
+            return new NextResponse(content, {
+                headers: {
+                    "Content-Type": mime.getType(`./uploads/${location}/${id}/${files[0]}`) ?? "application/octet-stream"
+                }
+            });
+        }
+        
         return NextResponse.json({ error: "The specified upload does not exist." }, { status: 404 });
     }
 
