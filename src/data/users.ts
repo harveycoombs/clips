@@ -23,8 +23,6 @@ export class Users {
         let connection = await pool.getConnection();
         connection.release();
 
-        console.log(result);
-
         return result[0];
     }
 
