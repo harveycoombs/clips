@@ -41,8 +41,11 @@ export default function Header({ current, user }: Properties) {
     let trimmerContainer = useRef<HTMLDivElement>(null);
     let trimmerBar = useRef<HTMLDivElement>(null);
 
-    let [leftTrimIsActive, setLeftTrimState] = useState<boolean>(false);
-    let [rightTrimIsActive, setRightTrimState] = useState<boolean>(false);
+    let leftTrimIsActive = false;
+    let rightTrimIsActive = false;
+
+    let previousLeftPosition = 0;
+    let previousTrimmerWidth = 0;
 
     let progressBar = useRef<HTMLProgressElement>(null);
     let percentageLabel = useRef<HTMLElement>(null);
@@ -68,10 +71,20 @@ export default function Header({ current, user }: Properties) {
     function trim(e: any) {
         if ((!leftTrimIsActive && !rightTrimIsActive) || !trimmerContainer?.current || !trimmerBar?.current) return;
 
-        let position = e.clientX - trimmerContainer.current?.offsetLeft;
+        let position = leftTrimIsActive ? (e.clientX - trimmerContainer.current.offsetLeft) : previousLeftPosition;
+        let width = previousTrimmerWidth ? previousTrimmerWidth : (leftTrimIsActive ? (trimmerContainer.current.clientWidth - position) : ((e.clientX - trimmerContainer.current.offsetLeft) - previousLeftPosition));
+
         if (position >= trimmerContainer.current.clientWidth) return;
 
-        trimmerBar.current.setAttribute("style", `width: ${trimmerContainer.current.clientWidth - position}px; left: ${position}px;`);
+        trimmerBar.current.setAttribute("style", `width: ${width}px; left: ${position}px;`);
+
+        previousLeftPosition = position;
+        //previousTrimmerWidth = width;
+    }
+
+    function resetTrim() {
+        leftTrimIsActive = false;
+        rightTrimIsActive = false;
     }
 
     function handleUpload(e: any) {
@@ -90,10 +103,10 @@ export default function Header({ current, user }: Properties) {
             uploadSteps[1] = <div className="w-fit mx-auto flex flex-col items-center justify-center h-[500px]">
                 <div className="flex justify-between items-center mb-2"><strong>{upload.name} <span className="text-slate-400 text-opacity-60">&ndash; {Utils.formatBytes(upload.size)}</span></strong></div>
                 <video src={reader.result?.toString()} ref={uploadedVideo} className="block bg-slate-50 rounded-md h-[420px] w-auto aspect-video overflow-hidden" controls></video>
-                <div className="w-full box-border h-10 mt-2 bg-slate-100 rounded-md" ref={trimmerContainer} onMouseMove={trim}>
-                    <div className="border-indigo-500 bg-indigo-200 border-solid border-2 rounded-md h-full min-w-3 relative" ref={trimmerBar}>
-                        <div className="w-3 absolute top-0 bottom-0 left-0 cursor-pointer grid place-items-center pl-2" onMouseDown={() => setLeftTrimState(true)} onMouseUp={() => setLeftTrimState(false)}><FontAwesomeIcon icon={faChevronLeft} className="text-indigo-500" /></div>
-                        <div className="w-3 absolute top-0 bottom-0 right-0 cursor-pointer grid place-items-center pr-4" onMouseDown={() => setRightTrimState(true)} onMouseUp={() => setRightTrimState(false)}><FontAwesomeIcon icon={faChevronRight} className="text-indigo-500" /></div>
+                <div className="w-full box-border h-10 mt-2 bg-slate-100 rounded-md" ref={trimmerContainer} onMouseMove={trim} onMouseLeave={resetTrim}>
+                    <div className="border-indigo-500 bg-indigo-200 border-solid border-2 rounded-md h-full min-w-[40px] relative" ref={trimmerBar}>
+                        <div className="w-3 absolute top-0 bottom-0 left-0 cursor-pointer grid place-items-center pl-2" onMouseDown={() => { leftTrimIsActive = true; }} onMouseUp={() => { leftTrimIsActive = false; }}><FontAwesomeIcon icon={faChevronLeft} className="text-indigo-500" /></div>
+                        <div className="w-3 absolute top-0 bottom-0 right-0 cursor-pointer grid place-items-center pr-4" onMouseDown={() => { rightTrimIsActive = true; }} onMouseUp={() => { rightTrimIsActive = false; }}><FontAwesomeIcon icon={faChevronRight} className="text-indigo-500" /></div>
                     </div>
                 </div>
             </div>;
