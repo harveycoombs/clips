@@ -47,8 +47,10 @@ export default function Header({ current, user }: Properties) {
     let previousLeftPosition = 0;
     let previousTrimmerWidth = 0;
 
-    let progressBar = useRef<HTMLProgressElement>(null);
     let percentageLabel = useRef<HTMLElement>(null);
+
+    let startTimeField = useRef<HTMLInputElement>(null);
+    let endTimeField = useRef<HTMLInputElement>(null);
 
     let uploadedVideo = useRef<HTMLVideoElement>(null);
 
@@ -79,7 +81,8 @@ export default function Header({ current, user }: Properties) {
         trimmerBar.current.setAttribute("style", `width: ${width}px; left: ${position}px;`);
 
         previousLeftPosition = position;
-        //previousTrimmerWidth = width;
+
+        console.log(uploadedVideo);
     }
 
     function resetTrim() {
@@ -101,9 +104,12 @@ export default function Header({ current, user }: Properties) {
         
         reader.addEventListener("load", () => {
             uploadSteps[1] = <div className="w-fit mx-auto flex flex-col items-center justify-center h-[500px]">
-                <div className="flex justify-between items-center mb-2"><strong>{upload.name} <span className="text-slate-400 text-opacity-60">&ndash; {Utils.formatBytes(upload.size)}</span></strong></div>
+                <div className="flex justify-between items-center w-full mb-2">
+                    <strong className="max-w-1/2 grow-0 text-wrap">{upload.name} <span className="text-slate-400 text-opacity-60">&ndash; {Utils.formatBytes(upload.size)}</span></strong>
+                    <div><span className="font-semibold text-sm text-slate-400 text-opacity-60">Start:</span><Field readonly={true} classes="w-20 ml-2 mr-3" small={true} ref={startTimeField} /><span className="font-semibold text-sm text-slate-400 text-opacity-60">End:</span><Field readonly={true} classes="w-20 ml-2" small={true} ref={endTimeField} /></div>
+                </div>
                 <video src={reader.result?.toString()} ref={uploadedVideo} className="block bg-slate-50 rounded-md h-[420px] w-auto aspect-video overflow-hidden" controls></video>
-                <div className="w-full box-border h-10 mt-2 bg-slate-100 rounded-md" ref={trimmerContainer} onMouseMove={trim} onMouseLeave={resetTrim}>
+                <div className="w-full box-border h-10 mt-2 bg-slate-100 rounded-md" ref={trimmerContainer} onMouseMove={trim} onMouseLeave={resetTrim} onMouseUp={resetTrim}>
                     <div className="border-indigo-500 bg-indigo-200 border-solid border-2 rounded-md h-full min-w-[40px] relative" ref={trimmerBar}>
                         <div className="w-3 absolute top-0 bottom-0 left-0 cursor-pointer grid place-items-center pl-2" onMouseDown={() => { leftTrimIsActive = true; }} onMouseUp={() => { leftTrimIsActive = false; }}><FontAwesomeIcon icon={faChevronLeft} className="text-indigo-500" /></div>
                         <div className="w-3 absolute top-0 bottom-0 right-0 cursor-pointer grid place-items-center pr-4" onMouseDown={() => { rightTrimIsActive = true; }} onMouseUp={() => { rightTrimIsActive = false; }}><FontAwesomeIcon icon={faChevronRight} className="text-indigo-500" /></div>
@@ -235,9 +241,7 @@ export default function Header({ current, user }: Properties) {
                 {uploaderContent}
                 <div className="flex justify-between items-center mt-4">
                     <Button classes="bg-red-500 hover:bg-red-600 active:bg-red-700" onClick={resetUploader}>Cancel Upload</Button>
-
                     {(completedUploadSteps.length == 3) ? <Button onClick={publish}>Publish</Button> : <Button onClick={showPublishSection}>Continue</Button>}
-                    
                 </div>
             </Popup> : null}
         </>

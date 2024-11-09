@@ -80,7 +80,7 @@ export class JWT {
     static async authenticate(token: string): Promise<any> {
         return new Promise((resolve, reject) => {
             if (!token) {
-                reject("Invalid token.");
+                resolve(null);
             }
 
             jwt.verify(token, process.env.JWT_SECRET as string, async (ex: any, user: any) => {
