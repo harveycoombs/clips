@@ -38,6 +38,9 @@ export default function Header({ current, user }: Properties) {
     let [uploaderContent, setUploaderContent] = useState<React.JSX.Element>(uploadSteps[0]);
     let [completedUploadSteps, setCompletedUploadSteps] = useState<number[]>([1]);
 
+    let [trimStart, setTrimStart] = useState<number>(0);
+    let [trimLength, setTrimLength] = useState<number>(0);
+
     let trimmerContainer = useRef<HTMLDivElement>(null);
     let trimmerBar = useRef<HTMLDivElement>(null);
 
@@ -82,7 +85,18 @@ export default function Header({ current, user }: Properties) {
 
         previousLeftPosition = position;
 
-        console.log(uploadedVideo);
+        if (uploadedVideo?.current) {
+            let start = uploadedVideo.current.duration * (trimmerContainer.current.clientWidth / previousLeftPosition);
+            let length = uploadedVideo.current.duration * (trimmerContainer.current.clientWidth / trimmerBar.current.clientWidth);
+
+            setTrimStart(start);
+            setTrimLength(length);
+
+            if (startTimeField?.current && endTimeField?.current) {
+                startTimeField.current.value = start.toString();
+                endTimeField.current.value = (start + length).toString();
+            }
+        }
     }
 
     function resetTrim() {
@@ -106,7 +120,7 @@ export default function Header({ current, user }: Properties) {
             uploadSteps[1] = <div className="w-fit mx-auto flex flex-col items-center justify-center h-[500px]">
                 <div className="flex justify-between items-center w-full mb-2">
                     <strong className="max-w-1/2 grow-0 text-wrap">{upload.name} <span className="text-slate-400 text-opacity-60">&ndash; {Utils.formatBytes(upload.size)}</span></strong>
-                    <div><span className="font-semibold text-sm text-slate-400 text-opacity-60">Start:</span><Field readonly={true} classes="w-20 ml-2 mr-3" small={true} ref={startTimeField} /><span className="font-semibold text-sm text-slate-400 text-opacity-60">End:</span><Field readonly={true} classes="w-20 ml-2" small={true} ref={endTimeField} /></div>
+                    <div><span className="font-semibold text-sm text-slate-400 text-opacity-60">Start:</span><Field readOnly={true} classes="w-20 ml-2 mr-3" small={true} ref={startTimeField} value="0:00" /><span className="font-semibold text-sm text-slate-400 text-opacity-60">End:</span><Field readOnly={true} classes="w-20 ml-2" small={true} ref={endTimeField} /></div>
                 </div>
                 <video src={reader.result?.toString()} ref={uploadedVideo} className="block bg-slate-50 rounded-md h-[420px] w-auto aspect-video overflow-hidden" controls></video>
                 <div className="w-full box-border h-10 mt-2 bg-slate-100 rounded-md" ref={trimmerContainer} onMouseMove={trim} onMouseLeave={resetTrim} onMouseUp={resetTrim}>
@@ -118,6 +132,10 @@ export default function Header({ current, user }: Properties) {
             </div>;
 
             setStep(2);
+
+            if (endTimeField?.current && uploadedVideo?.current) {
+                endTimeField.current.value = uploadedVideo.current.duration.toString();
+            }
         });
 
         reader.readAsDataURL(upload);
