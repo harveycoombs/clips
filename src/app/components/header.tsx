@@ -15,6 +15,9 @@ import Popup from "@/app/components/ui/popup";
 
 import { Utils } from "@/data/utils";
 
+import { FFmpeg } from "@ffmpeg/ffmpeg";
+import { fetchFile } from "@ffmpeg/util";
+
 interface Properties {
     current: string;
     user?: any;
@@ -191,6 +194,37 @@ export default function Header({ current, user }: Properties) {
         }
     }
 
+    async function trimVideo(video: File, start: number, end: number): Promise<Blob> {
+        let ffmpeg = new FFmpeg();
+
+        await ffmpeg.load({
+            coreURL: `${window.location.origin}/ffmpeg-core.js`,
+            wasmURL: `${window.location.origin}/ffmpeg-core.wasm`,
+            workerURL: `${window.location.origin}/ffmpeg-core.worker.js`
+        });
+    
+        try {
+            let inputName = `input.${video.type.substring(video.type.indexOf("/"))}`;
+            let outputName = `output.${video.type.substring(video.type.indexOf("/"))}`;
+    
+            await ffmpeg.writeFile(inputName, await fetchFile(video));
+    
+            await ffmpeg.exec([
+                "-i", inputName,
+                "-ss", Math.round(start).toString(),
+                "-t", Math.round(end - start).toString(),
+                "-c", 'copy',
+                outputName
+            ]);
+    
+            let data = await ffmpeg.readFile(outputName);
+    
+            return new Blob([data], { type: video.type ?? "video/mp4" });
+        } finally {
+            ffmpeg.terminate();
+        }
+    }
+
     async function publish() {
         if (!uploadedFile) return;
 
@@ -199,10 +233,17 @@ export default function Header({ current, user }: Properties) {
 
         let data = new FormData();
 
-        data.set("file", uploadedFile);
+        let videoStart = trimStart ?? 0;
+        let videoEnd = videoStart + (trimLength ?? 0);
+
+        let trimmedVideo = await trimVideo(uploadedFile, videoStart, videoEnd);
+
+        data.set("file", trimmedVideo);
         data.set("title", postTitle);
         data.set("description", postDescription);
         data.set("category", postCategory);
+        data.set("start", videoStart.toString());
+        data.set("end", videoEnd.toString());
 
         let response = await fetch("/api/upload", {
             method: "POST",
