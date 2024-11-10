@@ -86,15 +86,21 @@ export default function Header({ current, user }: Properties) {
         previousLeftPosition = position;
 
         if (uploadedVideo?.current) {
-            let start = uploadedVideo.current.duration * (trimmerContainer.current.clientWidth / previousLeftPosition);
-            let length = uploadedVideo.current.duration * (trimmerContainer.current.clientWidth / trimmerBar.current.clientWidth);
+            let start = uploadedVideo.current.duration * (previousLeftPosition / trimmerContainer.current.clientWidth);
+            let length = uploadedVideo.current.duration * ( trimmerBar.current.clientWidth / trimmerContainer.current.clientWidth);
 
             setTrimStart(start);
             setTrimLength(length);
 
             if (startTimeField?.current && endTimeField?.current) {
-                startTimeField.current.value = start.toString();
-                endTimeField.current.value = (start + length).toString();
+                let startMinutes = Math.round((start / 60) - ((start / 60) % 60));
+                let startSeconds = Math.round(start % 60);
+
+                let lengthMinutes =  Math.round(((start + length) / 60) - (((start + length) / 60) % 60));
+                let lengthSeconds = Math.round((start + length) % 60);
+
+                startTimeField.current.value = `${startMinutes < 10 ? "0" : ""}${startMinutes}:${startSeconds < 10 ? "0" : ""}${startSeconds}`;
+                endTimeField.current.value = `${lengthMinutes < 10 ? "0" : ""}${lengthMinutes}:${lengthSeconds < 10 ? "0" : ""}${lengthSeconds}`;
             }
         }
     }
