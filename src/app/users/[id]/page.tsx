@@ -31,12 +31,12 @@ export default async function IndividualUser(e: any) {
                         <Image src={`/uploads/avatars/${user.userid}`} alt={fullName} width={60} height={60} className="inline-block align-middle aspect-square object-cover rounded-[4px]" />
                         <div className="inline-block align-middle ml-4 pb-1">
                             <strong className="text-lg font-bold">{fullName}</strong>
-                            <div className="text-sm font-medium text-slate-400 text-opacity-60"><FaLocationDot /> {user.location}</div>
+                            <div className="text-sm font-medium text-slate-400 text-opacity-60"><FaLocationDot className="inline-block align-middle" /> {user.location}</div>
                         </div>
                     </div><div className="text-[0.825rem] font-medium text-slate-400 text-opacity-60">
-                        <div title="Videos" className="mb-1"><FaFilm /> {1}</div>
-                        <div title="Comments" className="mb-1"><FaComments /> {0}</div>
-                        <div title="Comments"><FaCalendarDays /> {user.creationdate.toLocaleString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" })}</div>
+                        <div title="Videos" className="mb-1"><FaFilm className="inline-block align-middle mr-0.5" />{1}</div>
+                        <div title="Comments" className="mb-1"><FaComments className="inline-block align-middle mr-0.5" />{0}</div>
+                        <div title="Comments"><FaCalendarDays className="inline-block align-middle" /> {user.creationdate.toLocaleString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" })}</div>
                     </div>
                 </section>
                 <h2 className="block font-semibold mt-6 mb-3 select-none">{user.firstname}&apos;s Posts</h2>

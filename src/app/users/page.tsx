@@ -32,7 +32,7 @@ function User(props: any) {
         <article className="flex justify-between items-center px-2 py-1.5 mt-2 rounded-md bg-slate-100 text-slate-400 text-opacity-75" key={user.userid}>
             <div>
                 <strong className="font-semibold text-slate-500">{user.firstname} {user.lastname}</strong>
-                <div className="text-[0.825rem] font-semibold select-none mt-0.5"><FaHashtag /> {user.userid} &middot; <FaFilm /> {user.totalposts}</div>
+                <div className="text-[0.825rem] font-semibold select-none mt-0.5"><FaHashtag className="inline-block align-middle mr-0.5" /><span className="inline-block align-middle">{user.userid}</span><span className="inline-block align-middle px-1">&middot;</span><FaFilm className="inline-block align-middle mr-0.5" /><span className="inline-block align-middle mr-0.5">{user.totalposts}</span></div>
             </div>
             <Link href={`/users/${user.userid}`} className="text-lg cursor-pointer duration-150 hover:text-slate-500 hover:text-opacity-75 active:text-slate-600 active:text-opacity-75" target="_blank" title={`View ${user.firstname} ${user.lastname} in a new tab`} draggable="false"><FaUpRightFromSquare /></Link>
         </article>

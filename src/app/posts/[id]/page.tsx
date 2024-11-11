@@ -7,7 +7,7 @@ import { Posts } from "@/data/posts";
 import Button from "@/app/components/ui/button";
 
 export default async function IndividualPost(e: any) {
-    let post = await Posts.getPost(e.params.id.trim());
+    let post = await Posts.getPost((await e.params).id.trim());
 
     return (        
         <>

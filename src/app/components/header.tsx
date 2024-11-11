@@ -203,11 +203,15 @@ export default function Header({ current, user }: Properties) {
         await ffmpeg.load();
     
         try {
-            let inputName = `input.${video.type.split("/")[1]}`;
-            let outputName = `output.${video.type.split("/")[1]}`;
+            let inputName = `input.${video.name.substring(video.name.lastIndexOf("."))}`;
+            let outputName = `output.${video.name.substring(video.name.lastIndexOf("."))}`;
+
+            ffmpeg.FS("writeFile", inputName, await fetchFile(video));
     
-            await ffmpeg.FS("writeFile", inputName, await fetchFile(video));
-    
+            ffmpeg.setProgress(({ ratio }) => {
+                let progress = (ratio * 100).toFixed(2);
+            });
+
             await ffmpeg.run(
                 "-i", inputName,
                 "-ss", start.toString(),
@@ -217,8 +221,12 @@ export default function Header({ current, user }: Properties) {
             );
     
             let data = ffmpeg.FS("readFile", outputName);
-    
-            return new Blob([new Uint8Array(data.buffer)], { type: video.type ?? "video/mp4" });
+            let parts = [new Uint8Array(data.buffer)];
+
+            ffmpeg.FS("unlink", inputName);
+            ffmpeg.FS("unlink", outputName);
+
+            return new Blob(parts, { type: video.type ?? "video/mp4" });
         } finally {
             ffmpeg.exit();
         }
@@ -284,9 +292,9 @@ export default function Header({ current, user }: Properties) {
                 <div className="w-[840px] mx-auto flex justify-between items-center h-">
                     <Link href="/" className="font-bold text-slate-800 select-none duration-150 hover:opacity-65" draggable="false"><span className="text-indigo-500">clips</span>.harveycoombs.com</Link>
                     <nav>
-                        <HeaderNavigationItem icon={<FaBorderAll />} url="/" selected={current == "feed"} margin={true} />
-                        <HeaderNavigationItem icon={<FaUserGroup />} url="/users" selected={current == "users"} margin={true} />
-                        <HeaderNavigationItem icon={<FaRobot />} url="/ai" selected={current == "ai"} margin={true} />
+                        <HeaderNavigationItem icon={<FaBorderAll />} url="/" selected={current == "feed"} margin={true} fontSize="text-[1.3rem]" />
+                        <HeaderNavigationItem icon={<FaUserGroup />} url="/users" selected={current == "users"} margin={true} fontSize="text-[1.4rem]" />
+                        <HeaderNavigationItem icon={<FaRobot />} url="/ai" selected={current == "ai"} margin={true} fontSize="text-[1.6rem]" />
                         <HeaderNavigationItem icon={<FaMagnifyingGlass />} margin={true} selected={searchAreaIsVisible} click={() => setSearchAreaVisibility(!searchAreaIsVisible)} />
                         {userAvatar}
                     </nav>
@@ -313,7 +321,7 @@ export default function Header({ current, user }: Properties) {
 }
 
 function HeaderNavigationItem(props: any) {
-    let classList = `inline-block align-middle ${props.margin ? "mx-6" : ""} text-xl ${props.selected ? "text-indigo-500" : "text-slate-300"} cursor-pointer duration-150${props.selected ? " hover:text-indigo-600" : " hover:text-slate-400"}`;
+    let classList = `inline-block align-middle ${props.margin ? "mx-6" : ""} ${props.fontSize ? props.fontSize : "text-xl"} ${props.selected ? "text-indigo-500" : "text-slate-300"} cursor-pointer duration-150${props.selected ? " hover:text-indigo-600" : " hover:text-slate-400"}`;
     return props.url?.length ? <Link href={props.url} className={classList} draggable={false}>{props.icon}</Link> : <div className={classList} draggable={false} onClick={props.click}>{props.icon}</div>;
 }
 
