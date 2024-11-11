@@ -4,8 +4,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBorderAll, faUserGroup, faRobot, faMagnifyingGlass, faEllipsis, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { FaBorderAll, FaUserGroup, FaRobot, FaMagnifyingGlass, FaEllipsis, FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 
 import Button from "@/app/components/ui/button";
 import Field from "@/app/components/ui/field";
@@ -15,8 +14,7 @@ import Popup from "@/app/components/ui/popup";
 
 import { Utils } from "@/data/utils";
 
-import { FFmpeg } from "@ffmpeg/ffmpeg";
-import { fetchFile } from "@ffmpeg/util";
+import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
 interface Properties {
     current: string;
@@ -65,7 +63,7 @@ export default function Header({ current, user }: Properties) {
     let [postDescription, setPostDescription] = useState<string>("");
     
     let accountOptions = optionsAreVisible ? <div className="w-full absolute top-[120%] border-[1px] border-slate-400 border-opacity-60 rounded-md overflow-hidden select-none"><Link href="/settings" className="block px-2 py-1 text-[0.825rem] font-medium cursor-pointer bg-white hover:bg-slate-50 active:bg-slate-100">Settings</Link><div className="block px-2 py-1 border-t-[1px] border-slate-400 border-opacity-60 text-[0.825rem] text-red-500 font-medium cursor-pointer bg-white hover:bg-slate-50 active:bg-slate-100" onClick={logout}>Log Out</div></div> : null;
-    let options = user ? <div className="relative"><Button classes="inline-block align-middle mr-4" onClick={() => setUploadPopupVisibility(true)}>Upload</Button><HeaderNavigationItem icon={faEllipsis} margin={false} click={() => setOptionsVisibility(!optionsAreVisible)} />{accountOptions}</div> : <div><Button classes="inline-block align-middle" url="/login">Log In</Button><Button classes="inline-block align-middle ml-1" url="/register" transparent={true}>Register</Button></div>;
+    let options = user ? <div className="relative"><Button classes="inline-block align-middle mr-4" onClick={() => setUploadPopupVisibility(true)}>Upload</Button><HeaderNavigationItem icon={<FaEllipsis />} margin={false} click={() => setOptionsVisibility(!optionsAreVisible)} />{accountOptions}</div> : <div><Button classes="inline-block align-middle" url="/login">Log In</Button><Button classes="inline-block align-middle ml-1" url="/register" transparent={true}>Register</Button></div>;
     let userAvatar = user ? <Link href={`/users/${user.userid}`} title="View Your Profile" className="inline-block align-middle mx-6 cursor-pointer duration-150 hover:opacity-65"><Image src={`/uploads/avatars/${user.userid}`} alt={`${user.firstname} ${user.lastname}`} width={26} height={26} className="block aspect-square rounded-full object-cover" /></Link> : null;
 
     async function logout() {
@@ -134,8 +132,8 @@ export default function Header({ current, user }: Properties) {
                 <video src={reader.result?.toString()} ref={uploadedVideo} className="block bg-slate-50 rounded-md h-[420px] w-auto aspect-video overflow-hidden" controls></video>
                 <div className="w-full box-border h-10 mt-2 bg-slate-100 rounded-md" ref={trimmerContainer} onMouseMove={trim} onMouseLeave={resetTrim} onMouseUp={resetTrim}>
                     <div className="border-indigo-500 bg-indigo-200 border-solid border-2 rounded-md h-full min-w-[40px] relative" ref={trimmerBar}>
-                        <div className="w-3 absolute top-0 bottom-0 left-0 cursor-pointer grid place-items-center pl-2" onMouseDown={() => { leftTrimIsActive = true; }} onMouseUp={() => { leftTrimIsActive = false; }}><FontAwesomeIcon icon={faChevronLeft} className="text-indigo-500" /></div>
-                        <div className="w-3 absolute top-0 bottom-0 right-0 cursor-pointer grid place-items-center pr-4" onMouseDown={() => { rightTrimIsActive = true; }} onMouseUp={() => { rightTrimIsActive = false; }}><FontAwesomeIcon icon={faChevronRight} className="text-indigo-500" /></div>
+                        <div className="w-3 absolute top-0 bottom-0 left-0 cursor-pointer grid place-items-center pl-2" onMouseDown={() => { leftTrimIsActive = true; }} onMouseUp={() => { leftTrimIsActive = false; }}><FaChevronLeft className="text-indigo-500" /></div>
+                        <div className="w-3 absolute top-0 bottom-0 right-0 cursor-pointer grid place-items-center pr-4" onMouseDown={() => { rightTrimIsActive = true; }} onMouseUp={() => { rightTrimIsActive = false; }}><FaChevronRight className="text-indigo-500" /></div>
                     </div>
                 </div>
             </div>;
@@ -195,33 +193,34 @@ export default function Header({ current, user }: Properties) {
     }
 
     async function trimVideo(video: File, start: number, end: number): Promise<Blob> {
-        let ffmpeg = new FFmpeg();
-
-        await ffmpeg.load({
-            coreURL: `${window.location.origin}/ffmpeg-core.js`,
-            wasmURL: `${window.location.origin}/ffmpeg-core.wasm`,
-            workerURL: `${window.location.origin}/ffmpeg-core.worker.js`
+        let ffmpeg = createFFmpeg({
+            log: true,
+            corePath: `${window.location.origin}/ffmpeg-core.js`,
+            wasmPath: `${window.location.origin}/ffmpeg-core.wasm`,
+            workerPath: `${window.location.origin}/ffmpeg-core.worker.js`
         });
     
+        await ffmpeg.load();
+    
         try {
-            let inputName = `input.${video.type.substring(video.type.indexOf("/"))}`;
-            let outputName = `output.${video.type.substring(video.type.indexOf("/"))}`;
+            let inputName = `input.${video.type.split("/")[1]}`;
+            let outputName = `output.${video.type.split("/")[1]}`;
     
-            await ffmpeg.writeFile(inputName, await fetchFile(video));
+            await ffmpeg.FS("writeFile", inputName, await fetchFile(video));
     
-            await ffmpeg.exec([
+            await ffmpeg.run(
                 "-i", inputName,
-                "-ss", Math.round(start).toString(),
-                "-t", Math.round(end - start).toString(),
-                "-c", 'copy',
+                "-ss", start.toString(),
+                "-t", (end - start).toString(),
+                "-c", "copy",
                 outputName
-            ]);
+            );
     
-            let data = await ffmpeg.readFile(outputName);
+            let data = ffmpeg.FS("readFile", outputName);
     
-            return new Blob([data], { type: video.type ?? "video/mp4" });
+            return new Blob([new Uint8Array(data.buffer)], { type: video.type ?? "video/mp4" });
         } finally {
-            ffmpeg.terminate();
+            ffmpeg.exit();
         }
     }
 
@@ -285,10 +284,10 @@ export default function Header({ current, user }: Properties) {
                 <div className="w-[840px] mx-auto flex justify-between items-center h-">
                     <Link href="/" className="font-bold text-slate-800 select-none duration-150 hover:opacity-65" draggable="false"><span className="text-indigo-500">clips</span>.harveycoombs.com</Link>
                     <nav>
-                        <HeaderNavigationItem icon={faBorderAll} url="/" selected={current == "feed"} margin={true} />
-                        <HeaderNavigationItem icon={faUserGroup} url="/users" selected={current == "users"} margin={true} />
-                        <HeaderNavigationItem icon={faRobot} url="/ai" selected={current == "ai"} margin={true} />
-                        <HeaderNavigationItem icon={faMagnifyingGlass} margin={true} selected={searchAreaIsVisible} click={() => setSearchAreaVisibility(!searchAreaIsVisible)} />
+                        <HeaderNavigationItem icon={<FaBorderAll />} url="/" selected={current == "feed"} margin={true} />
+                        <HeaderNavigationItem icon={<FaUserGroup />} url="/users" selected={current == "users"} margin={true} />
+                        <HeaderNavigationItem icon={<FaRobot />} url="/ai" selected={current == "ai"} margin={true} />
+                        <HeaderNavigationItem icon={<FaMagnifyingGlass />} margin={true} selected={searchAreaIsVisible} click={() => setSearchAreaVisibility(!searchAreaIsVisible)} />
                         {userAvatar}
                     </nav>
                     {options}
@@ -315,7 +314,7 @@ export default function Header({ current, user }: Properties) {
 
 function HeaderNavigationItem(props: any) {
     let classList = `inline-block align-middle ${props.margin ? "mx-6" : ""} text-xl ${props.selected ? "text-indigo-500" : "text-slate-300"} cursor-pointer duration-150${props.selected ? " hover:text-indigo-600" : " hover:text-slate-400"}`;
-    return props.url?.length ? <Link href={props.url} className={classList} draggable={false}><FontAwesomeIcon icon={props.icon} /></Link> : <div className={classList} draggable={false} onClick={props.click}><FontAwesomeIcon icon={props.icon} /></div>;
+    return props.url?.length ? <Link href={props.url} className={classList} draggable={false}>{props.icon}</Link> : <div className={classList} draggable={false} onClick={props.click}>{props.icon}</div>;
 }
 
 function UploadStep(props: any) {

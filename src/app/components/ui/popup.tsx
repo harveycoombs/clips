@@ -1,5 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FaXmark } from "react-icons/fa6";
 
 interface Properties {
     children: React.ReactNode;
@@ -17,7 +16,7 @@ export default function Popup({ children, classes, title, onClose, ...rest }: Pr
             <div className={classList} {...rest}>
                 <div className="flex justify-between items-center mb-1">
                     <strong className="text-[0.9rem] select-none">{title}</strong>
-                    <div className="text-slate-300 cursor-pointer text-lg duration-150 hover:text-slate-400" onClick={onClose}><FontAwesomeIcon icon={faXmark} /></div>
+                    <div className="text-slate-300 cursor-pointer text-lg duration-150 hover:text-slate-400" onClick={onClose}><FaXmark /></div>
                 </div>{children}
             </div>
         </div>

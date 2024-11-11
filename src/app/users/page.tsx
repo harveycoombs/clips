@@ -4,8 +4,7 @@ import Link from "next/link";
 import { Users, JWT } from "@/data/users";
 import Header from "@/app/components/header";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHashtag, faFilm, faUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
+import { FaHashtag, FaFilm, FaUpRightFromSquare } from "react-icons/fa6";
 
 export default async function AllUsers() {
     let users = await Users.getUsers();
@@ -33,9 +32,9 @@ function User(props: any) {
         <article className="flex justify-between items-center px-2 py-1.5 mt-2 rounded-md bg-slate-100 text-slate-400 text-opacity-75" key={user.userid}>
             <div>
                 <strong className="font-semibold text-slate-500">{user.firstname} {user.lastname}</strong>
-                <div className="text-[0.825rem] font-semibold select-none mt-0.5"><FontAwesomeIcon icon={faHashtag} /> {user.userid} &middot; <FontAwesomeIcon icon={faFilm} /> {user.totalposts}</div>
+                <div className="text-[0.825rem] font-semibold select-none mt-0.5"><FaHashtag /> {user.userid} &middot; <FaFilm /> {user.totalposts}</div>
             </div>
-            <Link href={`/users/${user.userid}`} className="text-lg cursor-pointer duration-150 hover:text-slate-500 hover:text-opacity-75 active:text-slate-600 active:text-opacity-75" target="_blank" title={`View ${user.firstname} ${user.lastname} in a new tab`} draggable="false"><FontAwesomeIcon icon={faUpRightFromSquare} /></Link>
+            <Link href={`/users/${user.userid}`} className="text-lg cursor-pointer duration-150 hover:text-slate-500 hover:text-opacity-75 active:text-slate-600 active:text-opacity-75" target="_blank" title={`View ${user.firstname} ${user.lastname} in a new tab`} draggable="false"><FaUpRightFromSquare /></Link>
         </article>
     );
 }

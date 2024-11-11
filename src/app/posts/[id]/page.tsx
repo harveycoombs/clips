@@ -1,7 +1,6 @@
 import Link from "next/link";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarDays, faBookmark, faShareFromSquare, faDownload } from "@fortawesome/free-solid-svg-icons";
+import { FaCalendarDays, FaBookmark, FaShareFromSquare, FaDownload } from "react-icons/fa6";
 
 import Header from "@/app/components/header";
 import { Posts } from "@/data/posts";
@@ -23,12 +22,12 @@ export default async function IndividualPost(e: any) {
                         Posted by <Link href={`/users/${post.userid}`} className="font-semibold text-indigo-500 hover:underline">Harvey Coombs</Link>
                     </div>
                     <div className="text-sm">
-                        <FontAwesomeIcon icon={faCalendarDays} /> {post.publishdate.toLocaleString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" })}
+                        <FaCalendarDays /> {post.publishdate.toLocaleString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" })}
                     </div>
                     <div>
-                        <div className="inline-block align-middle text-lg duration-150 cursor-pointer hover:text-slate-400"><FontAwesomeIcon icon={faBookmark} /></div>
-                        <div className="inline-block align-middle text-lg ml-4 duration-150 cursor-pointer hover:text-slate-400"><FontAwesomeIcon icon={faShareFromSquare} /></div>
-                        <Button classes="inline-block align-middle ml-3"><FontAwesomeIcon icon={faDownload} className="mr-1" /> Download</Button>
+                        <div className="inline-block align-middle text-lg duration-150 cursor-pointer hover:text-slate-400"><FaBookmark /></div>
+                        <div className="inline-block align-middle text-lg ml-4 duration-150 cursor-pointer hover:text-slate-400"><FaShareFromSquare /></div>
+                        <Button classes="inline-block align-middle ml-3"><FaDownload className="mr-1" /> Download</Button>
                     </div>
                 </section><section className="text-sm text-slate-500 font-medium mt-3">                
                     {post.description}
