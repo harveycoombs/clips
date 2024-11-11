@@ -17,7 +17,7 @@ export default async function Home() {
     return (
         <>
             <Header current="feed" user={currentSessionUser} />
-            <main className="h-screen w-[840px] mx-auto" key="h">
+            <main className="h-screen w-[960px] mx-auto" key="h">
                 <h1 className="block text-lg font-semibold select-none">Your Feed</h1>
                 <section key="categories" className="pt-1.5 pb-3 flex gap-1">{categories.map((category: any) => <div key={categories.indexOf(category)} className="w-fit bg-indigo-200 bg-opacity-70 text-indigo-500 select-none font-semibold text-xs py-2 px-3 leading-[0.9em] rounded-full">{category.category}</div>)}</section>
                 <section key="posts" className="grid grid-cols-4 gap-2">{

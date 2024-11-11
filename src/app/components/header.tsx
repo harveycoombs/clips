@@ -289,8 +289,8 @@ export default function Header({ current, user }: Properties) {
     return (
         <>
             <header className="p-3">
-                <div className="w-[840px] mx-auto flex justify-between items-center h-">
-                    <Link href="/" className="font-bold text-slate-800 select-none duration-150 hover:opacity-65" draggable="false"><span className="text-indigo-500">clips</span>.harveycoombs.com</Link>
+                <div className="w-[960px] mx-auto flex justify-between items-center h-">
+                    <Link href="/" className="font-bold text-slate-800 select-none duration-150 hover:opacity-65" draggable="false"><span className="text-indigo-500">clips</span>.harveycoombs.com<span className="bg-red-500 text-white rounded px-1.5 py-[3px] text-[0.6rem] ml-1.5">BETA</span></Link>
                     <nav>
                         <HeaderNavigationItem icon={<FaBorderAll />} url="/" selected={current == "feed"} margin={true} fontSize="text-[1.3rem]" />
                         <HeaderNavigationItem icon={<FaUserGroup />} url="/users" selected={current == "users"} margin={true} fontSize="text-[1.4rem]" />
@@ -301,7 +301,7 @@ export default function Header({ current, user }: Properties) {
                     {options}
                 </div>
             </header>
-            {searchAreaIsVisible ? <div className="w-[840px] mx-auto">
+            {searchAreaIsVisible ? <div className="w-[960px] mx-auto">
                 <Field button={{ text: "Search", click: () => alert("Search was performed") }} classes="mb-3" placeholder="Search..." />
             </div>: null}
             {uploadPopupIsVisible ? <Popup classes="w-[70rem]" title="Upload a Clip" onClose={resetUploader}>

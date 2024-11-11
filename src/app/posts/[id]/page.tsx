@@ -1,18 +1,25 @@
+import { cookies } from "next/headers";
 import Link from "next/link";
 
 import { FaCalendarDays, FaBookmark, FaShareFromSquare, FaDownload } from "react-icons/fa6";
 
 import Header from "@/app/components/header";
-import { Posts } from "@/data/posts";
 import Button from "@/app/components/ui/button";
+
+import { Posts } from "@/data/posts";
+import { Users, JWT } from "@/data/users";
 
 export default async function IndividualPost(e: any) {
     let post = await Posts.getPost((await e.params).id.trim());
 
+    let cookieJar = await cookies();
+    let token = cookieJar.get("token")?.value;
+    let currentSessionUser = token?.length ? await JWT.authenticate(token) : null;
+
     return (        
         <>
-            <Header current="feed" />
-            <main className="h-screen w-[840px] mx-auto">
+            <Header current="feed" user={currentSessionUser} />
+            <main className="h-screen w-[960px] mx-auto">
                 <h1 className="block text-lg font-semibold mb-3 select-none">{post.title} <span className="text-slate-400 text-opacity-60">&ndash; {post.category}</span></h1>
                 <section className="bg-slate-50 rounded-lg overflow-hidden aspect-video w-full">
                     <video src={`/uploads/posts/${post.postid}`} controls className="w-full aspect-video"></video>
