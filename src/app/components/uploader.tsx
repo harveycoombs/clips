@@ -122,11 +122,9 @@ export default function Uploader() {
         reader.readAsDataURL(upload);
     }
     
-    function resetUploader(callback: any) {
+    function resetUploader() {
         setUploaderContent(uploadSteps[0]);
         setCompletedUploadSteps([1]);
-    
-        callback(false);
     }
     
     function setStep(n: number) {
@@ -260,7 +258,7 @@ export default function Uploader() {
     
         setStep(3);
     }
-
+    
     return (
         <Popup classes="w-[70rem]" title="Upload a Clip" onClose={resetUploader}>
             <div className="flex gap-1.5 w-3/4 mx-auto mt-2 mb-4">

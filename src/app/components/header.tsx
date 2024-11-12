@@ -18,7 +18,7 @@ interface Properties {
 export default function Header({ current, user }: Properties) {
     let [uploadPopupIsVisible, setUploadPopupVisibility] = useState<boolean>(false);
 
-    let [optionsAreVisible, setOptionsVisibility] = useState<boolean>(false);;
+    let [optionsAreVisible, setOptionsVisibility] = useState<boolean>(false);
     
     let accountOptions = optionsAreVisible ? <div className="w-full absolute top-[120%] border-[1px] border-slate-400 border-opacity-60 rounded-md overflow-hidden select-none"><Link href="/settings" className="block px-2 py-1 text-[0.825rem] font-medium cursor-pointer bg-white hover:bg-slate-50 active:bg-slate-100">Settings</Link><div className="block px-2 py-1 border-t-[1px] border-slate-400 border-opacity-60 text-[0.825rem] text-red-500 font-medium cursor-pointer bg-white hover:bg-slate-50 active:bg-slate-100" onClick={logout}>Log Out</div></div> : null;
     let options = user ? <div className="relative"><Button classes="inline-block align-middle mr-4" onClick={() => setUploadPopupVisibility(true)}>Upload</Button><HeaderNavigationItem icon={<FaEllipsis />} margin={false} click={() => setOptionsVisibility(!optionsAreVisible)} />{accountOptions}</div> : <div><Button classes="inline-block align-middle" url="/login">Log In</Button><Button classes="inline-block align-middle ml-1 hover:bg-slate-200 hover:text-slate-400 hover:text-opacity-80" url="/register" transparent={true}>Register</Button></div>;
