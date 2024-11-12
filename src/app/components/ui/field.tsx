@@ -21,7 +21,7 @@ export default function Field({ type, classes, small, error, warning, ...rest }:
             break;
     }
 
-    let classList = `py-2 px-4 rounded-full text-[0.8rem] leading-snug select-none duration-150 ${classes?.length ? " " + classes : ""} ${appearance} focus:outline-none focus:border-blue-500`;
+    let classList = `py-2 px-4 rounded-full text-[0.8rem] leading-snug select-none duration-150 ${classes?.length ? " " + classes : ""} ${appearance} focus:outline-none focus:bg-slate-200 focus:bg-opacity-75`;
 
     return <input type={type ?? "text"} className={classList} {...rest} />;
 }
