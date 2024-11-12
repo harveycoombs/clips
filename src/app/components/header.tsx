@@ -18,6 +18,7 @@ interface Properties {
 
 export default function Header({ current, user }: Properties) {
     let [uploadPopupIsVisible, setUploadPopupVisibility] = useState<boolean>(false);
+    //let [searchIsVisible, setSearchVisibility] = useState<boolean>(false);
 
     let [optionsAreVisible, setOptionsVisibility] = useState<boolean>(false);
     
@@ -35,7 +36,7 @@ export default function Header({ current, user }: Properties) {
 
     return (
         <>
-            <header className="p-2.5 mb-3 border-b border-b-slate-300">
+            <header className="p-2.5 mb-3 bg-white sticky top-0 border-b border-b-slate-300 z-30">
                 <div className="w-[1000px] mx-auto flex justify-between items-center">
                     <Link href="/" className="select-none duration-150 hover:opacity-65" draggable="false"><ClipsLogo width="59" height="27" className="inline-block align-middle" /></Link>
                     <nav>
@@ -49,6 +50,11 @@ export default function Header({ current, user }: Properties) {
                 </div>
             </header>
             {uploadPopupIsVisible ? <Uploader /> : null}
+            <div className="fixed inset-0 w-screen h-screen z-20 bg-gray-800 bg-opacity-10 backdrop-blur pt-20">
+                <div className="w-[1000px] bg-white p-3 rounded-md mx-auto shadow-md">
+                    <strong className="block text-base font-bold select-none">Showing {0} Results</strong>
+                </div>
+            </div>
         </>
     );
 }

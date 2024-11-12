@@ -42,7 +42,9 @@ export default function LoginForm() {
                 setWarningExistence(true);
                 setDisability(false);
 
+                setButton(<Button classes="block w-full mt-2.5">Continue</Button>);
                 setFeedback(<div className="text-sm font-medium text-center text-amber-400">Invalid credentials</div>);
+
                 return;
             }
 
