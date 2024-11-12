@@ -16,7 +16,9 @@ export default function Search({ query }: Properties) {
     useEffect(() => {
         (async () => {
             setLoading(true);
-            const result = await searchUsers(query);
+            
+            let result = await searchUsers(query);
+
             setUsers(result);
             setLoading(false);
         })();
