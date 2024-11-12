@@ -19,14 +19,14 @@ export default async function IndividualPost(e: any) {
     return (        
         <>
             <Header current="feed" user={currentSessionUser} />
-            <main className="h-screen w-[960px] mx-auto">
+            <main className="h-screen w-[1000px] mx-auto">
                 <h1 className="block text-lg font-semibold mb-3 select-none">{post.title} <span className="text-slate-400 text-opacity-60">&ndash; {post.category}</span></h1>
                 <section className="bg-slate-50 rounded-lg overflow-hidden aspect-video w-full">
                     <video src={`/uploads/posts/${post.postid}`} controls className="w-full aspect-video"></video>
                 </section>
                 <section className="flex justify-between items-center mt-3 font-medium text-slate-400 text-opacity-60">
                     <div className="text-sm">
-                        Posted by <Link href={`/users/${post.userid}`} className="font-semibold text-indigo-500 hover:underline">Harvey Coombs</Link>
+                        Posted by <Link href={`/users/${post.userid}`} className="font-semibold text-blue-500 hover:underline">Harvey Coombs</Link>
                     </div>
                     <div className="text-sm">
                         <FaCalendarDays /> {post.publishdate.toLocaleString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" })}

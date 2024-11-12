@@ -25,7 +25,7 @@ export default function Field({ type, classes, button, small, error, warning, ..
             break;
     }
 
-    let classList = `${button ? "py-2 pl-4 pr-2" : small ? "py-1.5 px-3.5" : "py-2 px-4"} rounded-full text-[0.8rem] select-none duration-150 ${button ? "flex align-middle gap-6 " : ""}${classes?.length ? " " + classes : ""} border-[1px] ${appearance} focus:outline-none focus:border-indigo-500`;
+    let classList = `${small ? "py-1.5 px-3.5" : "py-2 px-4"} rounded-full text-[0.75rem] select-none duration-150 ${button ? "flex align-middle gap-6 " : ""}${classes?.length ? " " + classes : ""} border-[1px] ${appearance} focus:outline-none focus:border-blue-500`;
 
     return button ? <div className={classList}><input type={type ?? "text"} className="w-full focus:outline-none" {...rest} /><Button click={button.click} classes="text-xs">{button.text}</Button></div> : <input type={type ?? "text"} className={classList} {...rest} />;
 }

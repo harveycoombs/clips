@@ -24,7 +24,7 @@ export default async function IndividualUser(e: any) {
     return (
         <>
             <Header current="users" user={currentSessionUser} />
-            <main className="h-screen w-[960px] mx-auto">
+            <main className="h-screen w-[1000px] mx-auto">
                 <h1 className="block text-lg font-semibold mb-3 select-none">User <span className="text-slate-400 text-opacity-60 pr-2">&#35;{user.userid}</span></h1>
                 <section className="flex justify-between items-center">
                     <div>

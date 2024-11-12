@@ -17,7 +17,7 @@ export default async function AllUsers() {
     return (
         <>
             <Header current="users" user={currentSessionUser} />
-            <main className="h-screen w-[960px] mx-auto">
+            <main className="h-screen w-[1000px] mx-auto">
                 <h1 className="block text-lg font-semibold mb-3 select-none">All Users <span className="text-slate-400 text-opacity-60">&ndash; {total}</span></h1>
                 <section>{users.map((user: any) => <User data={user} />)}</section>
             </main>
