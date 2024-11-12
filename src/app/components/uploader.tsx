@@ -1,7 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
 
-import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 
 import Button from "@/app/components/ui/button";
@@ -165,46 +164,6 @@ export default function Uploader() {
         }
     }
     
-    async function trimVideo(video: File, start: number, end: number): Promise<Blob> {
-        let ffmpeg = createFFmpeg({
-            log: true,
-            corePath: `${window.location.origin}/ffmpeg-core.js`,
-            wasmPath: `${window.location.origin}/ffmpeg-core.wasm`,
-            workerPath: `${window.location.origin}/ffmpeg-core.worker.js`
-        });
-    
-        await ffmpeg.load();
-    
-        try {
-            let inputName = `input.${video.name.substring(video.name.lastIndexOf("."))}`;
-            let outputName = `output.${video.name.substring(video.name.lastIndexOf("."))}`;
-    
-            ffmpeg.FS("writeFile", inputName, await fetchFile(video));
-    
-            ffmpeg.setProgress(({ ratio }) => {
-                let progress = (ratio * 100).toFixed(2);
-            });
-    
-            await ffmpeg.run(
-                "-i", inputName,
-                "-ss", start.toString(),
-                "-t", (end - start).toString(),
-                "-c", "copy",
-                outputName
-            );
-    
-            let data = ffmpeg.FS("readFile", outputName);
-            let parts = [new Uint8Array(data.buffer)];
-    
-            ffmpeg.FS("unlink", inputName);
-            ffmpeg.FS("unlink", outputName);
-    
-            return new Blob(parts, { type: video.type ?? "video/mp4" });
-        } finally {
-            ffmpeg.exit();
-        }
-    }
-    
     async function publish() {
         if (!uploadedFile) return;
     
@@ -216,7 +175,9 @@ export default function Uploader() {
         let videoStart = trimStart ?? 0;
         let videoEnd = videoStart + (trimLength ?? 0);
     
-        let trimmedVideo = await trimVideo(uploadedFile, videoStart, videoEnd);
+        let trimmedVideo = await Utils.trimVideo(window.location.origin, uploadedFile, videoStart, videoEnd, (progress: number) => {
+            console.log(progress); // to-do
+        });
     
         data.set("file", trimmedVideo);
         data.set("title", postTitle);
@@ -258,7 +219,7 @@ export default function Uploader() {
     
         setStep(3);
     }
-    
+
     return (
         <Popup classes="w-[70rem]" title="Upload a Clip" onClose={resetUploader}>
             <div className="flex gap-1.5 w-3/4 mx-auto mt-2 mb-4">
