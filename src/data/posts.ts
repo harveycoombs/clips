@@ -1,6 +1,4 @@
-import { connectionPool } from "./database";
-
-const pool = connectionPool();
+import pool from "./database";
 
 export class Posts {
     static async getPosts(offset: number=0, userid=0): Promise<any> {

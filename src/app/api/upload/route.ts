@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import * as fs from "fs/promises";
 
 import { Posts } from "@/data/posts";
-import { JWT } from "@/data/users";
+import { authenticate } from "@/data/jwt";
 
 export async function POST(request: Request): Promise<NextResponse> {
     let data = await request.formData();
@@ -15,7 +15,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     let cookieJar = await cookies();
     let token = cookieJar.get("token")?.value;
-    let currentSessionUser = token?.length ? await JWT.authenticate(token) : null;
+    let currentSessionUser = token?.length ? await authenticate(token) : null;
 
     let userid = currentSessionUser.userid;
     let title = data.get("title")?.toString();

@@ -4,7 +4,7 @@ import Header from "@/app/components/header";
 import Post from "@/app/components/post";
 
 import { Posts } from "@/data/posts";
-import { JWT } from "@/data/users";
+import { authenticate } from "@/data/jwt";
 
 export default async function Home() {
     let posts = await Posts.getPosts();
@@ -12,7 +12,7 @@ export default async function Home() {
 
     let cookieJar = await cookies();
     let token = cookieJar.get("token")?.value;
-    let currentSessionUser = token?.length ? await JWT.authenticate(token) : null;
+    let currentSessionUser = token?.length ? await authenticate(token) : null;
 
     return (
         <>

@@ -10,6 +10,7 @@ import Button from "@/app/components/ui/button";
 import Field from "@/app/components/ui/field";
 import Uploader from "@/app/components/uploader";
 import ClipsLogo from "@/app/components/logo";
+import Search from "@/app/components/search";
 
 interface Properties {
     current: string;
@@ -18,6 +19,8 @@ interface Properties {
 
 export default function Header({ current, user }: Properties) {
     let [uploadPopupIsVisible, setUploadPopupVisibility] = useState<boolean>(false);
+
+    let [searchQuery, setSearchQuery] = useState<string>("");
     //let [searchIsVisible, setSearchVisibility] = useState<boolean>(false);
 
     let [optionsAreVisible, setOptionsVisibility] = useState<boolean>(false);
@@ -40,7 +43,9 @@ export default function Header({ current, user }: Properties) {
                 <div className="w-[1000px] mx-auto flex justify-between items-center">
                     <Link href="/" className="select-none duration-150 hover:opacity-65" draggable="false"><ClipsLogo width="59" height="27" className="inline-block align-middle" /></Link>
                     <nav>
-                        <Field placeholder="Search" classes="w-72" />
+                        <Field placeholder="Search" classes="w-72" onInput={(e: any) => {
+                            setSearchQuery(e.target.value);
+                        }} />
                         <HeaderNavigationItem icon={<FaSliders />} classes="ml-3" />
                     </nav>
                     <div>
@@ -50,11 +55,7 @@ export default function Header({ current, user }: Properties) {
                 </div>
             </header>
             {uploadPopupIsVisible ? <Uploader /> : null}
-            <div className="fixed inset-0 w-screen h-screen z-20 bg-gray-800 bg-opacity-10 backdrop-blur pt-20">
-                <div className="w-[1000px] bg-white p-3 rounded-md mx-auto shadow-md">
-                    <strong className="block text-base font-bold select-none">Showing {0} Results</strong>
-                </div>
-            </div>
+           <Search query={searchQuery} />
         </>
     );
 }
