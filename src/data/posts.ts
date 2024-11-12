@@ -34,7 +34,7 @@ export class Posts {
     }
 
     static async getCategories(): Promise<any[]> {
-        let [result]: any = await pool.query("SELECT DISTINCT category FROM posts WHERE deleted = 0");
+        let [result]: any = await pool.query("SELECT DISTINCT category FROM posts WHERE deleted = 0 AND category IS NOT NULL AND category != ''");
 
         let connection = await pool.getConnection();
         connection.release();
