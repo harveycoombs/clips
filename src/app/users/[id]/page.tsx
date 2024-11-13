@@ -3,8 +3,9 @@ import Image from "next/image";
 
 import { FaLocationDot, FaFilm, FaComments, FaCalendarDays } from "react-icons/fa6";
 
-import { Users, JWT } from "@/data/users";
-import { Posts } from "@/data/posts";
+import { getUser } from "@/data/users";
+import { authenticate } from "@/data/jwt";
+import { getPosts } from "@/data/posts";
 
 import Header from "@/app/components/header";
 import Post from "@/app/components/post";
@@ -14,12 +15,12 @@ export default async function IndividualUser(e: any) {
 
     let cookieJar = await cookies();
     let token = cookieJar.get("token")?.value;
-    let currentSessionUser = await JWT.authenticate(token ?? "");
+    let currentSessionUser = await authenticate(token ?? "");
 
-    let user = await Users.getUser(userid);
+    let user = await getUser(userid);
     let fullName = `${user.firstname} ${user.lastname}`;
 
-    let posts = await Posts.getPosts(0, userid);
+    let posts = await getPosts(0, userid);
 
     return (
         <>

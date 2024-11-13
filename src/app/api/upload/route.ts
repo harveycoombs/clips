@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import * as fs from "fs/promises";
 
-import { Posts } from "@/data/posts";
+import { createPost } from "@/data/posts";
 import { authenticate } from "@/data/jwt";
 
 export async function POST(request: Request): Promise<NextResponse> {
@@ -25,7 +25,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (!userid) return NextResponse.json({ error: "Invalid user ID." }, { status: 400 });
     if (!title?.length) return NextResponse.json({ error: "Invalid title." }, { status: 400 });
 
-    let id = await Posts.createPost(userid, title, description, category);
+    let id = await createPost(userid, title, description, category);
 
     try {
         await fs.mkdir(`./uploads/posts/${id}`);

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { Users, JWT } from "@/data/users";
+import { getUser, verifyCredentials } from "@/data/users";
+import { createJWT } from "@/data/jwt";
 
 export async function POST(request: Request): Promise<NextResponse> {
     let data = await request.formData();
@@ -11,13 +12,13 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (!email?.length) return NextResponse.json({ error: "Email address was not provided." }, { status: 400 });
     if (!password?.length) return NextResponse.json({ error: "Password was not provided." }, { status: 400 });
 
-    let valid = await Users.verifyCredentials(email, password);
+    let valid = await verifyCredentials(email, password);
     if (!valid) return NextResponse.json({ error: "Invalid credentials." }, { status: 400 });
 
-    let user = await Users.getUser(email);
+    let user = await getUser(email);
     if (!user) return NextResponse.json({ success: false }, { status: 500 });
 
-    let credentials = JWT.create(user);
+    let credentials = createJWT(user);
 
     let response = NextResponse.json({ success: true }, { status: 200 });
 

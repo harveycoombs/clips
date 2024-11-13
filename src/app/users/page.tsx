@@ -1,18 +1,19 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
 
-import { Users, JWT } from "@/data/users";
+import { getUsers, getTotalUsers } from "@/data/users";
+import { authenticate } from "@/data/jwt";
 import Header from "@/app/components/header";
 
 import { FaHashtag, FaFilm, FaUpRightFromSquare } from "react-icons/fa6";
 
 export default async function AllUsers() {
-    let users = await Users.getUsers();
-    let total = await Users.getTotalUsers();
+    let users = await getUsers();
+    let total = await getTotalUsers();
 
     let cookieJar = await cookies();
     let token = cookieJar.get("token")?.value;
-    let currentSessionUser = await JWT.authenticate(token ?? "");
+    let currentSessionUser = await authenticate(token ?? "");
 
     return (
         <>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { Users, JWT } from "@/data/users";
+import { createUser, emailExists, getUser, verifyCredentials } from "@/data/users";
+import { createJWT } from "@/data/jwt";
 
 export async function POST(request: Request): Promise<NextResponse> {
     let data = await request.formData();
@@ -12,20 +13,20 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     if (!firstName?.length || !lastName?.length || !email?.length || !password?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
     
-    let emailAlreadyExists = await Users.emailExists(email);
+    let emailAlreadyExists = await emailExists(email);
     if (emailAlreadyExists) return NextResponse.json({ error: "Email already exists." }, { status: 409 });
 
-    let userid = await Users.createUser(firstName, lastName, email, password);
+    let userid = await createUser(firstName, lastName, email, password);
     if (!userid) return NextResponse.json({ error: "Unable to create user." }, { status: 500 });
 
 
-    let valid = await Users.verifyCredentials(email, password);
+    let valid = await verifyCredentials(email, password);
     if (!valid) return NextResponse.json({ error: "Invalid credentials." }, { status: 400 });
 
-    let user = await Users.getUser(email);
+    let user = await getUser(email);
     if (!user) return NextResponse.json({ error: "Unable to fetch newly created user." }, { status: 500 });
 
-    let credentials = JWT.create(user);
+    let credentials = createJWT(user);
 
     let response = NextResponse.json({ userid: userid }, { status: 200 });
 
