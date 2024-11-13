@@ -10,9 +10,11 @@ interface Properties {
 }
 
 export default function Search({ query }: Properties) {
+    if (!query.length) return null;
+
     let [users, setUsers] = useState<any[]>([]);
     let [loading, setLoading] = useState<boolean>(true);
-
+    
     useEffect(() => {
         (async () => {
             setLoading(true);

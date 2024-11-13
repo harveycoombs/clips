@@ -1,44 +1,44 @@
 {
-  "name": "clips",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev -p 83",
-    "build": "next build",
-    "start": "next start -p 83",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@ffmpeg/core": "^0.11.0",
-    "@ffmpeg/ffmpeg": "^0.11.6",
-    "argon2": "^0.41.1",
-    "cookie": "^1.0.1",
-    "jsonwebtoken": "^9.0.2",
-    "mime": "^4.0.4",
-    "next": "15.0.3",
-    "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106",
-    "react-icons": "^5.3.0",
-    "server-only": "^0.0.1"
-  },
-  "devDependencies": {
-    "@types/cookie": "^0.6.0",
-    "@types/jsonwebtoken": "^9.0.7",
-    "@types/node": "^20",
-    "@types/react": "npm:types-react@19.0.0-rc.1",
-    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
-    "ffmpeg-wasm": "^1.0.1",
-    "mysql2": "^3.11.3",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
-  },
-  "overrides": {
-    "@types/react": "npm:types-react@19.0.0-rc.1",
-    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
-  },
-  "prettier": {
-    "printWidth": 300,
-    "useTabs": true
-  }
+	"name": "clips",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev -p 83",
+		"build": "next build",
+		"start": "next start -p 83",
+		"lint": "next lint"
+	},
+	"dependencies": {
+		"@ffmpeg/core": "^0.11.0",
+		"@ffmpeg/ffmpeg": "^0.11.6",
+		"argon2": "^0.41.1",
+		"cookie": "^1.0.1",
+		"jsonwebtoken": "^9.0.2",
+		"mime": "^4.0.4",
+		"next": "15.0.3",
+		"react": "19.0.0-rc-66855b96-20241106",
+		"react-dom": "19.0.0-rc-66855b96-20241106",
+		"react-icons": "^5.3.0",
+		"server-only": "^0.0.1"
+	},
+	"devDependencies": {
+		"@types/cookie": "^0.6.0",
+		"@types/jsonwebtoken": "^9.0.7",
+		"@types/node": "^20",
+		"@types/react": "npm:types-react@19.0.0-rc.1",
+		"@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
+		"ffmpeg-wasm": "^1.0.1",
+		"mysql2": "^3.11.3",
+		"postcss": "^8",
+		"tailwindcss": "^3.4.1",
+		"typescript": "^5"
+	},
+	"overrides": {
+		"@types/react": "npm:types-react@19.0.0-rc.1",
+		"@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
+	},
+	"prettier": {
+		"printWidth": 300,
+		"useTabs": true
+	}
 }
