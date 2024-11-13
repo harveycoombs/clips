@@ -11,7 +11,13 @@ import Label from "@/app/components/ui/label";
 
 import { Utils } from "@/data/utils";
 
-export default function Uploader() {
+interface Properties {
+    show: boolean;
+}
+
+export default function Uploader({ show }: Properties) {
+    if (!show) return null;
+
     let uploader = useRef<HTMLInputElement|null>(null);
     let [uploadedFile, setUploadedFile] = useState<File|null>(null);
 
