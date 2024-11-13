@@ -3,12 +3,12 @@ import { cookies } from "next/headers";
 import Header from "@/app/components/header";
 import Post from "@/app/components/post";
 
-import { Posts } from "@/data/posts";
+import { getPosts, getCategories } from "@/data/posts";
 import { authenticate } from "@/data/jwt";
 
 export default async function Home() {
-    let posts = await Posts.getPosts();
-    let categories = await Posts.getCategories();
+    let posts = await getPosts();
+    let categories = await getCategories();
 
     let cookieJar = await cookies();
     let token = cookieJar.get("token")?.value;

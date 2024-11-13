@@ -6,11 +6,11 @@ import { FaCalendarDays, FaBookmark, FaShareFromSquare, FaDownload } from "react
 import Header from "@/app/components/header";
 import Button from "@/app/components/ui/button";
 
-import { Posts } from "@/data/posts";
+import { getPost } from "@/data/posts";
 import { authenticate } from "@/data/jwt";
 
 export default async function IndividualPost(e: any) {
-    let post = await Posts.getPost((await e.params).id.trim());
+    let post = await getPost((await e.params).id.trim());
 
     let cookieJar = await cookies();
     let token = cookieJar.get("token")?.value;
