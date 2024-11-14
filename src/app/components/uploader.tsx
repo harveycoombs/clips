@@ -202,7 +202,7 @@ export default function Uploader({ onClose }: Properties) {
         }
     
         let json = await response.json();
-        //window.location.href = `/posts/${json.id}`;
+        window.location.href = `/posts/${json.id}`;
     }
     
     function showPublishSection() {
