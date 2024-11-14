@@ -15,7 +15,7 @@ export default function Popup({ children, classes, title, onClose, ...rest }: Pr
         <div id="popup" className="fixed z-40 inset-0 w-full h-full grid place-items-center bg-slate-900 bg-opacity-70" onClick={(e: any) => {if (e.target.matches("#popup")) onClose() }}>
             <div className={classList} {...rest}>
                 <div className="flex justify-between items-center mb-1">
-                    <strong className="text-[0.9rem] select-none">{title}</strong>
+                    <strong className="text-[0.95rem] select-none">{title}</strong>
                     <div className="text-slate-300 cursor-pointer text-lg duration-150 hover:text-slate-400" onClick={onClose}><FaXmark /></div>
                 </div>{children}
             </div>

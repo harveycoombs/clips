@@ -13,6 +13,7 @@ const config: Config = {
         foreground: "var(--foreground)",
       },
       width: {
+        800: "800px",
         1000: "1000px"
       }
     },
