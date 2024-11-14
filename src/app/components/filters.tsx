@@ -18,7 +18,7 @@ export default function Filters({ onClose }: Properties) {
     useEffect(() => {
         (async () => {
             setCategoriesLoading(true);
-            
+
             let categoryList = await getCategories();
             setCategories(categoryList);
 
