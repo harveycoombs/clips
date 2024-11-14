@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
 
-import { FaCalendarDays, FaBookmark, FaShareFromSquare, FaDownload } from "react-icons/fa6";
+import { FaCalendarDays, FaBookmark, FaShareFromSquare } from "react-icons/fa6";
 
 import Header from "@/app/components/header";
 import Button from "@/app/components/ui/button";
@@ -18,7 +18,7 @@ export default async function IndividualPost(e: any) {
 
     return (        
         <>
-            <Header current="feed" user={currentSessionUser} />
+            <Header user={currentSessionUser} />
             <main className="h-screen w-1000 mx-auto">
                 <h1 className="block text-lg font-semibold mb-3 select-none">{post.title} <span className="text-slate-400 text-opacity-60">&ndash; {post.category}</span></h1>
                 <section className="bg-slate-50 rounded-lg overflow-hidden aspect-video w-full">
@@ -34,7 +34,7 @@ export default async function IndividualPost(e: any) {
                     <div>
                         <div className="inline-block align-middle text-lg duration-150 cursor-pointer hover:text-slate-400"><FaBookmark /></div>
                         <div className="inline-block align-middle text-lg ml-4 duration-150 cursor-pointer hover:text-slate-400"><FaShareFromSquare /></div>
-                        <Button classes="inline-block align-middle ml-3"><FaDownload className="mr-1" /> Download</Button>
+                        <Button classes="inline-block align-middle ml-3">Download</Button>
                     </div>
                 </section><section className="text-sm text-slate-500 font-medium mt-3">                
                     {post.description}

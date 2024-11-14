@@ -31,7 +31,8 @@ export async function POST(request: Request): Promise<NextResponse> {
         await fs.mkdir(`./uploads/posts/${id}`);
 
         let buffer = Buffer.from(await file.arrayBuffer());
-        await fs.writeFile(`./uploads/posts/${id}/video.mp4`, new Uint8Array(buffer));
+
+        await fs.writeFile(`./uploads/posts/${id}/${file.name}`, new Uint8Array(buffer));
     } catch (ex: any) {
         return NextResponse.json({ error: ex.message }, { status: 500 });
     }

@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 
+import { FaCircleNotch } from "react-icons/fa6";
+
 import Popup from "@/app/components/ui/popup";
 import Field from "@/app/components/ui/field";
 import Category from "@/app/components/ui/category";
@@ -74,11 +76,11 @@ export default function Filters({ onClose, onApply }: Properties) {
                     <Label classes="w-full">From</Label>
                     <Field type="date" classes="w-full" onInput={(e: any) => setFromDate(e.target.value)} />
                     <Label classes="w-full">To</Label>
-                    <Field type="date" classes="w-full" onInput={(e: any) => setToDate(e.target.value)} />
+                    <Field type="date" classes="w-full" onInput={(e: any) => setToDate(e.target.value)} max="2024-11-14" />
                 </div>
                 <div className="w-1/3">
                     <strong className="block text-[0.82rem] font-semibold mt-1 mb-2">Filter by Category</strong>
-                    {categoriesAreLoading ? <div className="text-sm text-gray-400">Loading...</div> : <><Field placeholder="Search Categories" classes="w-full mb-2" /><div>{categories.map(category => <Category name={category} onClick={toggleCategory} />)}</div></>}
+                    {categoriesAreLoading ? <div className="text-sm text-gray-400"><FaCircleNotch className="animate-spin" /></div> : <><Field placeholder="Search Categories" classes="w-full mb-2" /><div>{categories.map(category => <Category name={category} onClick={toggleCategory} />)}</div></>}
                 </div>
                 <div className="w-1/3">
                     <strong className="block text-[0.82rem] font-semibold mt-1 mb-2">Filter by Length</strong>

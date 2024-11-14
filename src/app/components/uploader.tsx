@@ -9,7 +9,7 @@ import Field from "@/app/components/ui/field";
 import TextBox from "@/app/components/ui/textbox";
 import Label from "@/app/components/ui/label";
 
-import { Utils } from "@/data/utils";
+import { formatBytes, trimVideo } from "@/data/utils";
 
 interface Properties {
     onClose: any;
@@ -103,7 +103,7 @@ export default function Uploader({ onClose }: Properties) {
         reader.addEventListener("load", () => {
             uploadSteps[1] = <div className="w-fit mx-auto flex flex-col items-center justify-center h-[500px]">
                 <div className="flex justify-between items-center w-full mb-2">
-                    <strong className="max-w-1/2 grow-0 text-wrap">{upload.name} <span className="text-slate-400/60">&ndash; {Utils.formatBytes(upload.size)}</span></strong>
+                    <strong className="max-w-1/2 grow-0 text-wrap">{upload.name} <span className="text-slate-400/60">&ndash; {formatBytes(upload.size)}</span></strong>
                     <div><span className="font-semibold text-sm text-slate-400/60">Start:</span><Field readOnly={true} classes="w-20 ml-2 mr-3" small={true} ref={startTimeField} value="0:00" /><span className="font-semibold text-sm text-slate-400/60">End:</span><Field readOnly={true} classes="w-20 ml-2" small={true} ref={endTimeField} /></div>
                 </div>
                 <video src={reader.result?.toString()} ref={uploadedVideo} className="block bg-slate-50 rounded-md h-[420px] w-auto aspect-video overflow-hidden" controls></video>
@@ -144,8 +144,8 @@ export default function Uploader({ onClose }: Properties) {
     
         let uploaderMessage = e.target.querySelector("div > span");
         
-        uploaderMessage.classList.remove("text-slate-400", "text-opacity-65");
-        uploaderMessage.classList.add("text-blue-500");
+        uploaderMessage?.classList?.remove("text-slate-400", "text-opacity-65");
+        uploaderMessage?.classList?.add("text-blue-500");
     }
     
     function handleDragLeaveEvent(e: any) {
@@ -154,8 +154,8 @@ export default function Uploader({ onClose }: Properties) {
     
         let uploaderMessage = e.target.querySelector("div > span");
     
-        uploaderMessage.classList.remove("text-blue-500");
-        uploaderMessage.classList.add("text-slate-400", "text-opacity-65");
+        uploaderMessage?.classList?.remove("text-blue-500");
+        uploaderMessage?.classList?.add("text-slate-400", "text-opacity-65");
     }
     
     function handleDropEvent(e: any) {
@@ -180,11 +180,11 @@ export default function Uploader({ onClose }: Properties) {
         let videoStart = trimStart ?? 0;
         let videoEnd = videoStart + (trimLength ?? 0);
     
-        let trimmedVideo = await Utils.trimVideo(window.location.origin, uploadedFile, videoStart, videoEnd, (progress: number) => {
+        let trimmedVideo = await trimVideo(window.location.origin, uploadedFile, videoStart, videoEnd, (progress: number) => {
             console.log(progress); // to-do
         });
     
-        data.set("file", trimmedVideo);
+        data.set("file", new File([trimmedVideo], uploadedFile.name, { type: uploadedFile.type }));
         data.set("title", postTitle);
         data.set("description", postDescription);
         data.set("category", postCategory);
@@ -202,7 +202,7 @@ export default function Uploader({ onClose }: Properties) {
         }
     
         let json = await response.json();
-        window.location.href = `/posts/${json.id}`;
+        //window.location.href = `/posts/${json.id}`;
     }
     
     function showPublishSection() {

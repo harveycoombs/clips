@@ -2,10 +2,10 @@ import { cookies } from "next/headers";
 
 import Header from "@/app/components/header";
 import Post from "@/app/components/post";
+import Category from "@/app/components/ui/category";
 
 import { getPosts, getCategories } from "@/data/posts";
 import { authenticate } from "@/data/jwt";
-import Category from "./components/ui/category";
 
 export default async function Home() {
     let posts = await getPosts();

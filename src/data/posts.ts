@@ -22,7 +22,7 @@ export async function createPost(userid: number, title: string, description: str
 
 export async function getCategories(): Promise<any[]> {
     let [result]: any = await pool.query("SELECT DISTINCT category FROM posts WHERE deleted = 0 AND category IS NOT NULL AND category != ''");
-    return result;
+    return result?.map((category: any) => category.category) ?? [];
 }
 
 export async function searchPosts(query: string, offset: number=0): Promise<any[]> {
