@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import Popup from "@/app/components/ui/popup";
 import Field from "@/app/components/ui/field";
 import Category from "@/app/components/ui/category";
