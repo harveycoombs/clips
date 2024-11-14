@@ -19,7 +19,7 @@ export default async function IndividualPost(e: any) {
     return (        
         <>
             <Header current="feed" user={currentSessionUser} />
-            <main className="h-screen w-[1000px] mx-auto">
+            <main className="h-screen w-1000 mx-auto">
                 <h1 className="block text-lg font-semibold mb-3 select-none">{post.title} <span className="text-slate-400 text-opacity-60">&ndash; {post.category}</span></h1>
                 <section className="bg-slate-50 rounded-lg overflow-hidden aspect-video w-full">
                     <video src={`/uploads/posts/${post.postid}`} controls className="w-full aspect-video"></video>

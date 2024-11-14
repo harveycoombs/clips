@@ -11,15 +11,16 @@ import Field from "@/app/components/ui/field";
 import Uploader from "@/app/components/uploader";
 import ClipsLogo from "@/app/components/logo";
 import Search from "@/app/components/search";
+import Filters from "@/app/components/filters";
 
 interface Properties {
-    current: string;
     user?: any;
 }
 
-export default function Header({ current, user }: Properties) {
+export default function Header({ user }: Properties) {
     let [optionsAreVisible, setOptionsVisibility] = useState<boolean>(false);
     let [uploadPopupIsVisible, setUploadPopupVisibility] = useState<boolean>(false);
+    let [filtersPopupIsVisible, setFiltersPopupVisibility] = useState<boolean>(false);
     
     let [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -38,13 +39,13 @@ export default function Header({ current, user }: Properties) {
     return (
         <>
             <header className="p-2.5 mb-3 bg-white sticky top-0 border-b border-b-slate-300 z-30">
-                <div className="w-[1000px] mx-auto flex justify-between items-center">
+                <div className="w-1000 mx-auto flex justify-between items-center">
                     <Link href="/" className="select-none duration-150 hover:opacity-65" draggable="false"><ClipsLogo width="59" height="27" className="inline-block align-middle" /></Link>
                     <nav>
                         <Field placeholder="Search" classes="w-72" onInput={(e: any) => {
                             setSearchQuery(e.target.value);
                         }} />
-                        <HeaderNavigationItem icon={<FaSliders />} classes="ml-3" />
+                        <HeaderNavigationItem icon={<FaSliders />} classes="ml-3" click={() => setFiltersPopupVisibility(true)} />
                     </nav>
                     <div>
                         {options}
@@ -53,6 +54,7 @@ export default function Header({ current, user }: Properties) {
                 </div>
             </header>
             {uploadPopupIsVisible ? <Uploader onClose={() => setUploadPopupVisibility(false)} /> : null}
+            {filtersPopupIsVisible ? <Filters onClose={() => setFiltersPopupVisibility(false)} /> : null}
             <Search query={searchQuery} />
         </>
     );

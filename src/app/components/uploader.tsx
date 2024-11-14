@@ -226,7 +226,7 @@ export default function Uploader({ onClose }: Properties) {
     }
 
     return (
-        <Popup classes="w-[70rem]" title="Upload a Clip" onClose={resetUploader}>
+        <Popup classes="w-1000" title="Upload a Clip" onClose={resetUploader}>
             <div className="flex gap-1.5 w-3/4 mx-auto mt-2 mb-4">
                 <UploadStep number={1} title="Upload" completed={completedUploadSteps.indexOf(1) != -1} classes="rounded-l-full" click={() => setStep(1)} />
                 <UploadStep number={2} title="Edit" completed={completedUploadSteps.indexOf(2) != -1} click={() => setStep(2)} />
@@ -242,8 +242,8 @@ export default function Uploader({ onClose }: Properties) {
 }
 
 function UploadStep(props: any) {
-    let titleAppearance = props.completed ? "text-blue-500" : "text-slate-400 text-opacity-60";
-    let barAppearance = props.completed ? "bg-blue-500" : "bg-slate-400 bg-opacity-45";
+    let titleAppearance = props.completed ? "text-blue-500" : "text-slate-400/60";
+    let barAppearance = props.completed ? "bg-blue-500" : "bg-slate-400/45";
 
     return (
         <div className="w-1/3 text-center cursor-pointer" onClick={props.click}>
