@@ -1,8 +1,9 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
 
-import { FaUpRightFromSquare } from "react-icons/fa6";
+import { FaUpRightFromSquare, FaCircleExclamation } from "react-icons/fa6";
 
 export default function Post(props: any) {
     function playVideo(e: any) {
@@ -15,10 +16,16 @@ export default function Post(props: any) {
 
     let post = props.data;
 
+    let icon = useRef<HTMLDivElement>(null);
+
     return (
         <Link href={`/posts/${post.postid}`} title={post.title} className="group bg-slate-50 aspect-square rounded-md overflow-hidden relative" key={post.postid}>
-            <video src={`/uploads/posts/${post.postid}`} className="w-full h-full object-cover" loop muted playsInline onMouseEnter={playVideo} onMouseLeave={stopVideo}></video>
-            <div className="pointer-events-none absolute inset-0 bg-black text-white bg-opacity-50 place-items-center hidden group-hover:grid"><FaUpRightFromSquare className="text-4xl pointer-events-none" /></div>
+            <video src={`/uploads/posts/${post.postid}`} className="w-full h-full object-cover" loop muted playsInline onMouseEnter={playVideo} onMouseLeave={stopVideo} onError={(e: any) => {
+                e.target.remove();
+                icon?.current?.remove();
+            }}></video>
+            <FaCircleExclamation className="text-6xl absolute inset-0 m-auto text-slate-300/70" />
+            <div ref={icon} className="pointer-events-none absolute inset-0 bg-black text-white bg-opacity-50 place-items-center hidden group-hover:grid"><FaUpRightFromSquare className="text-4xl pointer-events-none" /></div>
         </Link>
     );
 }
