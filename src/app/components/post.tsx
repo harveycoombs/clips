@@ -6,17 +6,27 @@ import Link from "next/link";
 import { FaUpRightFromSquare, FaCircleExclamation } from "react-icons/fa6";
 
 export default function Post(props: any) {
+    let hover = useRef<HTMLDivElement>(null);
+
     function playVideo(e: any) {
-        e.target.play();
+        try {
+            e.target.play();
+        } catch {
+            e.target.remove();
+            hover?.current?.remove();
+        }
     }
     
     function stopVideo(e: any) {
-        e.target.pause();
+        try {
+            e.target.pause();
+        } catch {
+            e.target.remove();
+            hover?.current?.remove();
+        }
     }
 
     let post = props.data;
-
-    let hover = useRef<HTMLDivElement>(null);
 
     return (
         <Link href={`/posts/${post.postid}`} title={post.title} className="group bg-slate-50 aspect-square rounded-md overflow-hidden relative" key={post.postid}>
