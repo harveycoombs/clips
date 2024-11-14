@@ -89,9 +89,7 @@ export default function Filters({ onClose, onApply }: Properties) {
             </div>
             <div className="w-fit ml-auto mt-2.5">
                 <Button classes="bg-red-500 mr-2.5 hover:bg-red-600 active:bg-red-700">Clear Filters</Button>
-                <Button onClick={() => {
-                    onApply(fromDate, toDate, selectedCategories, selectedLengths);
-                }}>Apply Filters</Button>
+                <Button onClick={() => onApply({ fromDate: fromDate, toDate: toDate, categories: selectedCategories, lengths: selectedLengths })}>Apply Filters</Button>
             </div>
         </Popup>
     );

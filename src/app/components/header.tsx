@@ -54,7 +54,9 @@ export default function Header({ user }: Properties) {
                 </div>
             </header>
             {uploadPopupIsVisible ? <Uploader onClose={() => setUploadPopupVisibility(false)} /> : null}
-            {filtersPopupIsVisible ? <Filters onClose={() => setFiltersPopupVisibility(false)} /> : null}
+            {filtersPopupIsVisible ? <Filters onClose={() => setFiltersPopupVisibility(false)} onApply={(filters: any) => {
+                setFiltersPopupVisibility(false);
+            }} /> : null}
             <Search query={searchQuery} />
         </>
     );
