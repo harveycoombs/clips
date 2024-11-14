@@ -52,7 +52,7 @@ export default function Header({ current, user }: Properties) {
                     </div>
                 </div>
             </header>
-            <Uploader show={uploadPopupIsVisible} />
+            {uploadPopupIsVisible ? <Uploader onClose={() => setUploadPopupVisibility(false)} /> : null}
             <Search query={searchQuery} />
         </>
     );

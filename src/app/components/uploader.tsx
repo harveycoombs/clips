@@ -12,12 +12,10 @@ import Label from "@/app/components/ui/label";
 import { Utils } from "@/data/utils";
 
 interface Properties {
-    show: boolean;
+    onClose: any;
 }
 
-export default function Uploader({ show }: Properties) {
-    if (!show) return null;
-
+export default function Uploader({ onClose }: Properties) {
     let uploader = useRef<HTMLInputElement|null>(null);
     let [uploadedFile, setUploadedFile] = useState<File|null>(null);
 
@@ -130,6 +128,7 @@ export default function Uploader({ show }: Properties) {
     function resetUploader() {
         setUploaderContent(uploadSteps[0]);
         setCompletedUploadSteps([1]);
+        onClose();
     }
     
     function setStep(n: number) {

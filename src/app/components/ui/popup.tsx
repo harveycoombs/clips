@@ -12,7 +12,7 @@ export default function Popup({ children, classes, title, onClose, ...rest }: Pr
     let classList = `p-2.5 rounded-md bg-white min-w-96 ${classes?.length ? " " + classes : ""}`;
 
     return (
-        <div className="fixed z-40 inset-0 w-full h-full grid place-items-center bg-slate-900 bg-opacity-70">
+        <div id="popup" className="fixed z-40 inset-0 w-full h-full grid place-items-center bg-slate-900 bg-opacity-70" onClick={(e: any) => {if (e.target.matches("#popup")) onClose() }}>
             <div className={classList} {...rest}>
                 <div className="flex justify-between items-center mb-1">
                     <strong className="text-[0.9rem] select-none">{title}</strong>
