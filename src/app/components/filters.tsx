@@ -80,7 +80,7 @@ export default function Filters({ onClose, onApply }: Properties) {
                 </div>
                 <div className="w-1/3">
                     <strong className="block text-[0.82rem] font-semibold mt-1 mb-2">Filter by Category</strong>
-                    {categoriesAreLoading ? <div className="text-sm text-gray-400"><FaCircleNotch className="animate-spin" /></div> : <><Field placeholder="Search Categories" classes="w-full mb-2" /><div>{categories.map(category => <Category name={category} onClick={toggleCategory} />)}</div></>}
+                    {categoriesAreLoading ? <div className="text-sm text-gray-400"><FaCircleNotch className="animate-spin" /></div> : <><Field placeholder="Search Categories" classes="w-full mb-2" /><div className="flex gap-1 w-full flex-wrap">{categories.map(category => <Category name={category} onClick={toggleCategory} />)}</div></>}
                 </div>
                 <div className="w-1/3">
                     <strong className="block text-[0.82rem] font-semibold mt-1 mb-2">Filter by Length</strong>
