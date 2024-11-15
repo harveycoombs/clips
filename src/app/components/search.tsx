@@ -60,7 +60,7 @@ function UserSearchResult(props: any) {
     return (
         <Link href="/" target="_blank" draggable="false" className="p-2.5 rounded-md flex justify-between items-center cursor-pointer duration-150 hover:bg-slate-50 active:bg-slate-100">
             <div>
-                <Image src={`/uploads/avatars/${props.user.userid}`} alt="User" draggable="false" width={46} height={46} className="object-cover aspect-square rounded-full shadow-md inline-block align-middle select-none" />
+                <Image src={`/uploads/avatars/${props.user.userid}`} alt="User" draggable="false" width={46} height={46} className="object-cover aspect-square rounded-md shadow-md inline-block align-middle select-none" />
                 <div className="inline-block align-middle ml-3 select-none">
                     <strong className="block text-base font-bold leading-tight text-slate-600">{props.user.firstname} {props.user.lastname}</strong>
                     <div className="text-sm font-medium text-slate-400/60">{props.user.totalposts} posts &middot; {props.user.locations}</div>
