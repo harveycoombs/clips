@@ -20,7 +20,7 @@ export default async function IndividualPost(e: any) {
     return (        
         <>
             <Header user={currentSessionUser} />
-            <main className="h-screen w-1000 mx-auto">
+            <main className="h-[calc(100vh-110px)] w-1000 mx-auto pt-3 overflow-auto">
                 <h1 className="block text-lg font-bold mb-3 select-none">{post.title} <span className="text-slate-400 text-opacity-60">&ndash; {post.category}</span></h1>
                 <section className="bg-slate-50 rounded-lg overflow-hidden aspect-video w-full">
                     <video src={`/uploads/posts/${post.postid}`} controls className="w-full aspect-video"></video>
@@ -33,9 +33,6 @@ export default async function IndividualPost(e: any) {
                             <div className="text-xs py-0.5 px-1.5 bg-blue-100 text-blue-500 rounded-md w-fit">@username</div>
                         </div>
                     </Link>
-                    <div className="text-sm">
-                        <FaCalendarDays /> {post.publishdate.toLocaleString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" })}
-                    </div>
                     <div>
                         <div className="inline-block align-middle text-lg duration-150 cursor-pointer hover:text-slate-400"><FaBookmark /></div>
                         <div className="inline-block align-middle text-lg ml-4 duration-150 cursor-pointer hover:text-slate-400"><FaShareFromSquare /></div>
