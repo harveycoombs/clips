@@ -34,6 +34,29 @@ export default function Uploader({ onClose }: Properties) {
         })();
     }, []);
 
+    useEffect(() => {
+        console.log("use effect uploaded file", uploadedFile);
+
+        if (!uploadedFile) return;
+
+        setTrimLength(uploadedVideo?.current?.duration ?? 0);
+        setVideoTitle(uploadedFile.name);
+        setVideoSize(uploadedFile.size);
+
+        let reader = new FileReader();
+        
+        reader.addEventListener("load", () => {
+            setVideoData(reader.result?.toString() ?? "");
+            setStep(2);
+    
+            if (endTimeField?.current && uploadedVideo?.current) {
+                endTimeField.current.value = uploadedVideo.current.duration.toString();
+            }
+        });
+    
+        reader.readAsDataURL(uploadedFile);
+    }, [uploadedFile]);
+
     let [completedUploadSteps, setCompletedUploadSteps] = useState<number[]>([1]);
 
     let [trimStart, setTrimStart] = useState<number>(0);
@@ -63,8 +86,6 @@ export default function Uploader({ onClose }: Properties) {
     let [videoSize, setVideoSize] = useState<number>(0);
 
     function trim(e: any) {
-        console.log("trim()");
-
         if ((!leftTrimIsActive && !rightTrimIsActive) || !trimmerContainer?.current || !trimmerBar?.current) return;
     
         let position = leftTrimIsActive ? (e.clientX - trimmerContainer.current.offsetLeft) : previousLeftPosition;
@@ -97,8 +118,6 @@ export default function Uploader({ onClose }: Properties) {
     }
     
     function resetTrim() {
-        console.log("resetTrim()");
-
         leftTrimIsActive = false;
         rightTrimIsActive = false;
     }
@@ -110,24 +129,8 @@ export default function Uploader({ onClose }: Properties) {
             //setStep(2);
             return;
         }
-    
+
         setUploadedFile(upload);
-        setTrimLength(uploadedVideo?.current?.duration ?? 0);
-        setVideoTitle(upload.name);
-        setVideoSize(upload.size);
-    
-        let reader = new FileReader();
-        
-        reader.addEventListener("load", () => {
-            setVideoData(reader.result?.toString() ?? "");
-            setStep(2);
-    
-            if (endTimeField?.current && uploadedVideo?.current) {
-                endTimeField.current.value = uploadedVideo.current.duration.toString();
-            }
-        });
-    
-        reader.readAsDataURL(upload);
     }
     
     function resetUploader() {
