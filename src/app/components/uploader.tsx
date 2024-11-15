@@ -34,29 +34,13 @@ export default function Uploader({ onClose }: Properties) {
         })();
     }, []);
 
-    useEffect(() => {
-        console.log("use effect uploaded file", uploadedFile);
+    let uploadSteps = [
+        <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragOverEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}><div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div><input type="file" accept="video/mp4,video/x-m4v,video/*" className="hidden" ref={uploader} onChange={handleUpload} /></div>,
+        <div className="w-full h-[500px] grid place-items-center"><strong className="text-amber-500 font-medium">Please upload a video to continue</strong></div>,
+        <div className="w-full h-[500px]">Publish Your Video</div>
+    ];
 
-        if (!uploadedFile) return;
-
-        setTrimLength(uploadedVideo?.current?.duration ?? 0);
-        setVideoTitle(uploadedFile.name);
-        setVideoSize(uploadedFile.size);
-
-        let reader = new FileReader();
-        
-        reader.addEventListener("load", () => {
-            setVideoData(reader.result?.toString() ?? "");
-            setStep(2);
-    
-            if (endTimeField?.current && uploadedVideo?.current) {
-                endTimeField.current.value = uploadedVideo.current.duration.toString();
-            }
-        });
-    
-        reader.readAsDataURL(uploadedFile);
-    }, [uploadedFile]);
-
+    let [uploaderContent, setUploaderContent] = useState<React.JSX.Element>(uploadSteps[0]);
     let [completedUploadSteps, setCompletedUploadSteps] = useState<number[]>([1]);
 
     let [trimStart, setTrimStart] = useState<number>(0);
@@ -71,6 +55,8 @@ export default function Uploader({ onClose }: Properties) {
     let previousLeftPosition = 0;
     let previousTrimmerWidth = 0;
 
+    let percentageLabel = useRef<HTMLElement>(null);
+
     let startTimeField = useRef<HTMLInputElement>(null);
     let endTimeField = useRef<HTMLInputElement>(null);
 
@@ -80,11 +66,6 @@ export default function Uploader({ onClose }: Properties) {
     let [postCategory, setPostCategory] = useState<string>("");
     let [postDescription, setPostDescription] = useState<string>("");
 
-    let [currentStep, setCurrentStep] = useState<number>(1);
-    let [videoData, setVideoData] = useState<string|undefined>(undefined);
-    let [videoTitle, setVideoTitle] = useState<string>("");
-    let [videoSize, setVideoSize] = useState<number>(0);
-
     function trim(e: any) {
         if ((!leftTrimIsActive && !rightTrimIsActive) || !trimmerContainer?.current || !trimmerBar?.current) return;
     
@@ -92,7 +73,7 @@ export default function Uploader({ onClose }: Properties) {
         let width = previousTrimmerWidth ? previousTrimmerWidth : (leftTrimIsActive ? (trimmerContainer.current.clientWidth - position) : ((e.clientX - trimmerContainer.current.offsetLeft) - previousLeftPosition));
     
         if (position >= trimmerContainer.current.clientWidth) return;
-
+    
         trimmerBar.current.setAttribute("style", `width: ${width}px; left: ${position}px;`);
     
         previousLeftPosition = position;
@@ -126,21 +107,49 @@ export default function Uploader({ onClose }: Properties) {
         let upload = e.target.files[0];
     
         if (!upload.type.startsWith("video")) {
-            //setStep(2);
+            setStep(2);
             return;
         }
-
+    
         setUploadedFile(upload);
+        setTrimLength(uploadedVideo?.current?.duration ?? 0);
+    
+        let reader = new FileReader();
+        
+        reader.addEventListener("load", () => {
+            uploadSteps[1] = <div className="w-fit mx-auto flex flex-col items-center justify-center h-[500px]">
+                <div className="flex justify-between items-center w-full mb-2">
+                    <strong className="max-w-1/2 grow-0 text-wrap">{upload.name} <span className="text-slate-400/60">&ndash; {formatBytes(upload.size)}</span></strong>
+                    <div><span className="font-semibold text-sm text-slate-400/60">Start:</span><Field readOnly={true} classes="w-20 ml-2 mr-3" small={true} ref={startTimeField} value="0:00" /><span className="font-semibold text-sm text-slate-400/60">End:</span><Field readOnly={true} classes="w-20 ml-2" small={true} ref={endTimeField} /></div>
+                </div>
+                <video src={reader.result?.toString()} ref={uploadedVideo} className="block bg-slate-50 rounded-md h-[420px] w-auto aspect-video overflow-hidden" controls></video>
+                <div className="w-full box-border h-10 mt-2 bg-slate-100 rounded-md" ref={trimmerContainer} onMouseMove={trim} onMouseLeave={resetTrim} onMouseUp={resetTrim}>
+                    <div className="border-blue-500 bg-blue-200 border-solid border-2 rounded-md h-full min-w-[40px] relative" ref={trimmerBar}>
+                        <div className="w-3 absolute top-0 bottom-0 left-0 cursor-pointer grid place-items-center pl-2" onMouseDown={() => { leftTrimIsActive = true; }} onMouseUp={() => { leftTrimIsActive = false; }}><FaChevronLeft className="text-blue-500" /></div>
+                        <div className="w-3 absolute top-0 bottom-0 right-0 cursor-pointer grid place-items-center pr-4" onMouseDown={() => { rightTrimIsActive = true; }} onMouseUp={() => { rightTrimIsActive = false; }}><FaChevronRight className="text-blue-500" /></div>
+                    </div>
+                </div>
+            </div>;
+    
+            setStep(2);
+    
+            if (endTimeField?.current && uploadedVideo?.current) {
+                endTimeField.current.value = uploadedVideo.current.duration.toString();
+            }
+        });
+    
+        reader.readAsDataURL(upload);
     }
     
     function resetUploader() {
+        setUploaderContent(uploadSteps[0]);
         setCompletedUploadSteps([1]);
         onClose();
     }
     
     function setStep(n: number) {
         setCompletedUploadSteps(Array.from({ length: n }, (_, x) => n - x));
-        setCurrentStep(n);
+        setUploaderContent(uploadSteps[n - 1]);
     }
     
     function handleDragOverEvent(e: any) {
@@ -179,6 +188,9 @@ export default function Uploader({ onClose }: Properties) {
     async function publish() {
         if (!uploadedFile) return;
     
+        uploadSteps[2] = <div className="w-full h-[500px] grid place-items-center"><strong className="block text-xl text-center text-slate-400 font-semibold select-none" ref={percentageLabel}>Publishing...</strong></div>;
+        setStep(3);
+    
         let data = new FormData();
     
         let videoStart = trimStart ?? 0;
@@ -215,7 +227,22 @@ export default function Uploader({ onClose }: Properties) {
     }
     
     function showPublishSection() {
-        setVideoData(uploadedVideo?.current?.src ?? "");
+        let data = uploadedVideo?.current?.src;
+    
+        uploadSteps[2] = <div className="w-full h-[500px] flex gap-8">
+            <div className="w-1/2 bg-slate-50 rounded-md">
+                <video src={data} className="h-full mx-auto"></video>
+            </div>
+            <div className="w-1/2">
+                <Label classes="w-full">Title</Label>
+                <Field classes="w-full" onInput={(e: any) => setPostTitle(e.target.value)} />
+                <Label classes="w-full">Category</Label>
+                <Field classes="w-full" onInput={(e: any) => setPostCategory(e.target.value)} list={categoriesAreLoading ? [] : categories} />
+                <Label classes="w-full">Description</Label>
+                <TextBox classes="w-full min-h-20 max-h-86 rounded-xl resize-horizontal" rows="6" onInput={(e: any) => setPostDescription(e.target.value)} />
+            </div>
+        </div>;
+    
         setStep(3);
     }
 
@@ -226,36 +253,10 @@ export default function Uploader({ onClose }: Properties) {
                 <UploadStep number={2} title="Edit" completed={completedUploadSteps.indexOf(2) != -1} />
                 <UploadStep number={3} title="Publish" completed={completedUploadSteps.indexOf(3) != -1} classes="rounded-r-full" />
             </div>
-            <div className={`w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center${(currentStep == 1) ? "" : " hidden"}`} onDragOver={handleDragOverEvent} onDragEnter={handleDragOverEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}><div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div><input type="file" accept="video/mp4,video/x-m4v,video/*" className="hidden" ref={uploader} onChange={handleUpload} /></div>
-            <div className={`w-fit mx-auto flex flex-col items-center justify-center h-[500px]${(currentStep == 2) ? "" : " hidden"}`}>
-                <div className="flex justify-between items-center w-full mb-2">
-                    <strong className="max-w-1/2 grow-0 text-wrap">{videoTitle} <span className="text-slate-400/60">&ndash; {formatBytes(videoSize)}</span></strong>
-                    <div><span className="font-semibold text-sm text-slate-400/60">Start:</span><Field readOnly={true} classes="w-20 ml-2 mr-3" small={true} ref={startTimeField} value="0:00" /><span className="font-semibold text-sm text-slate-400/60">End:</span><Field readOnly={true} classes="w-20 ml-2" small={true} ref={endTimeField} /></div>
-                </div>
-                <video src={videoData} className="block bg-slate-50 rounded-md h-[420px] w-auto aspect-video overflow-hidden" controls></video>
-                <div className="w-full box-border h-10 mt-2 bg-slate-100 rounded-md" ref={trimmerContainer} onMouseMove={trim} onMouseLeave={resetTrim} onMouseUp={resetTrim} >
-                    <div className="border-blue-500 bg-blue-200 border-solid border-2 rounded-md h-full min-w-[40px] relative" ref={trimmerBar}>
-                        <div className="w-3 absolute top-0 bottom-0 left-0 cursor-pointer grid place-items-center pl-2" onMouseDown={() => { leftTrimIsActive = true; console.log("mouse down (L)") }} onMouseUp={() => { leftTrimIsActive = false; console.log("mouse up (L)") }}><FaChevronLeft className="text-blue-500" /></div>
-                        <div className="w-3 absolute top-0 bottom-0 right-0 cursor-pointer grid place-items-center pr-4" onMouseDown={() => { rightTrimIsActive = true; console.log("mouse down (R)") }} onMouseUp={() => { rightTrimIsActive = false; console.log("mouse up (R)") }}><FaChevronRight className="text-blue-500" /></div>
-                    </div>
-                </div>
-            </div>
-            <div className={`w-full h-[500px] flex gap-8${(currentStep == 3) ? "" : " hidden"}`}>
-                <div className="w-1/2 bg-slate-50 rounded-md">
-                    <video src={videoData} ref={uploadedVideo} className="h-full mx-auto"></video>
-                </div>
-                <div className="w-1/2">
-                    <Label classes="w-full">Title</Label>
-                    <Field classes="w-full" onInput={(e: any) => setPostTitle(e.target.value)} />
-                    <Label classes="w-full">Category</Label>
-                    <Field classes="w-full" onInput={(e: any) => setPostCategory(e.target.value)} list={categoriesAreLoading ? [] : categories} />
-                    <Label classes="w-full">Description</Label>
-                    <TextBox classes="w-full min-h-20 max-h-86 rounded-xl resize-horizontal" rows="6" onInput={(e: any) => setPostDescription(e.target.value)} />
-                </div>
-            </div>
+            {uploaderContent}
             <div className="flex justify-between items-center mt-4">
                 <Button classes="bg-red-500 hover:bg-red-600 active:bg-red-700" onClick={resetUploader}>Cancel Upload</Button>
-                {(completedUploadSteps.length == 3) ? <Button onClick={publish}>Publish</Button> : <Button onClick={showPublishSection} classes={`${uploadedFile ? "" : "opacity-50 pointer-events-none"}`} disabled={!uploadedFile}>Continue</Button>}
+                {(completedUploadSteps.length == 3) ? <Button onClick={publish}>Publish</Button> : <Button onClick={showPublishSection}>Continue</Button>}
             </div>
         </Popup>
     );
