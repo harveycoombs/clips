@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 
@@ -10,6 +10,7 @@ import TextBox from "@/app/components/ui/textbox";
 import Label from "@/app/components/ui/label";
 
 import { formatBytes, trimVideo } from "@/data/utils";
+import { getCategories } from "@/data/posts";
 
 interface Properties {
     onClose: any;
@@ -18,6 +19,20 @@ interface Properties {
 export default function Uploader({ onClose }: Properties) {
     let uploader = useRef<HTMLInputElement|null>(null);
     let [uploadedFile, setUploadedFile] = useState<File|null>(null);
+
+    let [categories, setCategories] = useState<string[]>([]);
+    let [categoriesAreLoading, setCategoriesLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        (async () => {
+            setCategoriesLoading(true);
+
+            let categoryList = await getCategories();
+            setCategories(categoryList);
+
+            setCategoriesLoading(false);
+        })();
+    }, []);
 
     let uploadSteps = [
         <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragOverEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}><div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div><input type="file" accept="video/mp4,video/x-m4v,video/*" className="hidden" ref={uploader} onChange={handleUpload} /></div>,
@@ -97,6 +112,7 @@ export default function Uploader({ onClose }: Properties) {
         }
     
         setUploadedFile(upload);
+        setTrimLength(uploadedVideo?.current?.duration ?? 0);
     
         let reader = new FileReader();
         
@@ -180,11 +196,16 @@ export default function Uploader({ onClose }: Properties) {
         let videoStart = trimStart ?? 0;
         let videoEnd = videoStart + (trimLength ?? 0);
     
-        let trimmedVideo = await trimVideo(window.location.origin, uploadedFile, videoStart, videoEnd, (progress: number) => {
-            console.log(progress); // to-do
-        });
-    
-        data.set("file", new File([trimmedVideo], uploadedFile.name, { type: uploadedFile.type }));
+        if (videoStart && videoEnd && trimLength) {
+            let trimmedVideo = await trimVideo(window.location.origin, uploadedFile, videoStart, videoEnd, (progress: number) => {
+                console.log(progress); // to-do
+            });
+        
+            data.set("file", new File([trimmedVideo], uploadedFile.name, { type: uploadedFile.type }));
+        } else {
+            data.set("file", uploadedFile);
+        }
+
         data.set("title", postTitle);
         data.set("description", postDescription);
         data.set("category", postCategory);
@@ -216,7 +237,7 @@ export default function Uploader({ onClose }: Properties) {
                 <Label classes="w-full">Title</Label>
                 <Field classes="w-full" onInput={(e: any) => setPostTitle(e.target.value)} />
                 <Label classes="w-full">Category</Label>
-                <Field classes="w-full" onInput={(e: any) => setPostCategory(e.target.value)} />
+                <Field classes="w-full" onInput={(e: any) => setPostCategory(e.target.value)} list={categoriesAreLoading ? [] : categories} />
                 <Label classes="w-full">Description</Label>
                 <TextBox classes="w-full min-h-20 max-h-86 rounded-xl resize-horizontal" rows="6" onInput={(e: any) => setPostDescription(e.target.value)} />
             </div>
@@ -228,9 +249,9 @@ export default function Uploader({ onClose }: Properties) {
     return (
         <Popup classes="w-1000" title="Upload a Clip" onClose={resetUploader}>
             <div className="flex gap-1.5 w-3/4 mx-auto mt-2 mb-4">
-                <UploadStep number={1} title="Upload" completed={completedUploadSteps.indexOf(1) != -1} classes="rounded-l-full" click={() => setStep(1)} />
-                <UploadStep number={2} title="Edit" completed={completedUploadSteps.indexOf(2) != -1} click={() => setStep(2)} />
-                <UploadStep number={3} title="Publish" completed={completedUploadSteps.indexOf(3) != -1} classes="rounded-r-full" click={() => setStep(3)} />
+                <UploadStep number={1} title="Upload" completed={completedUploadSteps.indexOf(1) != -1} classes="rounded-l-full" />
+                <UploadStep number={2} title="Edit" completed={completedUploadSteps.indexOf(2) != -1} />
+                <UploadStep number={3} title="Publish" completed={completedUploadSteps.indexOf(3) != -1} classes="rounded-r-full" />
             </div>
             {uploaderContent}
             <div className="flex justify-between items-center mt-4">
@@ -246,7 +267,7 @@ function UploadStep(props: any) {
     let barAppearance = props.completed ? "bg-blue-500" : "bg-slate-400/45";
 
     return (
-        <div className="w-1/3 text-center cursor-pointer" onClick={props.click}>
+        <div className="w-1/3 text-center" onClick={props.click}>
             <strong className={`text-sm select-none ${titleAppearance} font-semibold`}>{props.number}. {props.title}</strong>
             <div className={`h-1.5 w-full ${barAppearance} mt-2${props.classes?.length ? " " + props.classes : ""}`}></div>
         </div>

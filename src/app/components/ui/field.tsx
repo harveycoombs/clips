@@ -3,10 +3,11 @@ interface Properties {
     classes?: string;
     error?: boolean;
     warning?: boolean;
+    list?: string[];
     [key: string]: any;
 }
 
-export default function Field({ type, classes, small, error, warning, ...rest }: Properties) {
+export default function Field({ type, classes, small, error, warning, list, ...rest }: Properties) {
     let appearance;
 
     switch (true) {
@@ -22,6 +23,15 @@ export default function Field({ type, classes, small, error, warning, ...rest }:
     }
 
     let classList = `py-2 px-4 rounded-full text-[0.8rem] leading-snug select-none duration-150 ${classes?.length ? " " + classes : ""} ${appearance} focus:outline-none focus:bg-slate-200 focus:bg-opacity-75`;
+
+    if (list?.length) {
+        return (
+            <>
+                <input type={type ?? "text"} className={classList} {...rest} list="suggestions" />
+                <datalist id="suggestions">{list.map(item => <option value={item} />)}</datalist>
+            </>
+        );
+    }
 
     return <input type={type ?? "text"} className={classList} {...rest} />;
 }
