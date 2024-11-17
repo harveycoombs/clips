@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 
-import Link from "next/link";
 import Image from "next/image";
 
 import { searchUsers } from "@/data/users";
@@ -18,7 +17,7 @@ const containerVariants = {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.08, // Slightly slower stagger (was 0.03)
+        staggerChildren: 0.08,
       }
     }
   };
@@ -33,9 +32,9 @@ const containerVariants = {
       opacity: 1,
       transition: {
         type: "spring",
-        stiffness: 300,  // Reduced from 400
-        damping: 10,     // Keeping the bounce
-        mass: 0.5,       // Increased from 0.2 for slower movement
+        stiffness: 300,
+        damping: 10,
+        mass: 0.5,
       }
     }
   };
