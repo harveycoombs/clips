@@ -1,12 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
-
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 import { searchUsers } from "@/data/users";
 import { searchPosts } from "@/data/posts";
 
-import { motion } from "framer-motion";
+
 
 interface Properties {
 	query: string;
