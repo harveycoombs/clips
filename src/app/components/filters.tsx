@@ -71,18 +71,18 @@ export default function Filters({ onClose, onApply }: Properties) {
     return (
         <Popup title="Filters" onClose={onClose}>
             <div className="w-800 flex gap-12 flex-nowrap justify-between max-h-96">
-                <div className="w-1/3" key="datefilters">
+                <div className="w-1/3">
                     <strong className="block text-[0.82rem] font-semibold mt-1 mb-2">Filter by Date</strong>
                     <Label classes="w-full">From</Label>
                     <Field type="date" classes="w-full" onInput={(e: any) => setFromDate(e.target.value)} />
                     <Label classes="w-full">To</Label>
                     <Field type="date" classes="w-full" onInput={(e: any) => setToDate(e.target.value)} max="2024-11-14" />
                 </div>
-                <div className="w-1/3" key="categoryfilters">
-                    <strong className="block text-[0.82rem] font-semibold mt-1 mb-2">Filter by Category</strong>
-                    {categoriesAreLoading ? <div className="text-sm text-gray-400"><FaCircleNotch className="animate-spin" /></div> : <><Field placeholder="Search Categories" classes="w-full mb-2" /><div className="flex gap-1 w-full flex-wrap">{categories.map(category => <Category name={category} onClick={toggleCategory} />)}</div></>}
+                <div className="w-1/3">
+                    <strong className="block text-[0.82rem] font-semibold mt-1 mb-2" key="title">Filter by Category</strong>
+                    {categoriesAreLoading ? <div className="text-sm text-gray-400" key="loader"><FaCircleNotch className="animate-spin" /></div> : <><Field key="fieldnhsd" placeholder="Search Categories" classes="w-full mb-2" /><div key="list" className="flex gap-1 w-full flex-wrap">{categories.map(category => <Category name={category} onClick={toggleCategory} />)}</div></>}
                 </div>
-                <div className="w-1/3" key="lengthfilters">
+                <div className="w-1/3">
                     <strong className="block text-[0.82rem] font-semibold mt-1 mb-2">Filter by Length</strong>
                     <div className="px-3 py-2 mb-2 bg-slate-50 border border-slate-300 rounded-md text-slate-400/60 select-none cursor-pointer text-[0.8rem]" data-length="lt1" onClick={toggleLengthOption}>&lt; 1 Minute</div>
                     <div className="px-3 py-2 mb-2 bg-slate-50 border border-slate-300 rounded-md text-slate-400/60 select-none cursor-pointer text-[0.8rem]" data-length="1t5" onClick={toggleLengthOption}>1-5 Minutes</div>
