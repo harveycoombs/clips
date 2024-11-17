@@ -18,11 +18,11 @@ export default function Field({ type, classes, small, error, warning, list, ...r
             appearance = "bg-amber-50 text-amber-500";
             break;
         default:
-            appearance = "bg-slate-100 text-slate-900";
+            appearance = "bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-white placeholder-slate-400/70";
             break;
     }
 
-    let classList = `py-2 px-4 rounded-md text-[0.8rem] leading-snug select-none duration-150 ${classes?.length ? " " + classes : ""} ${appearance} focus:outline-none focus:bg-slate-200 focus:bg-opacity-75`;
+    let classList = `py-2 px-4 rounded-md text-[0.8rem] leading-snug select-none duration-150 ${classes?.length ? " " + classes : ""} ${appearance} focus:outline-none focus:bg-slate-200 focus:bg-opacity-75 focus:dark:bg-slate-600`;
 
     if (list?.length) {
         return (

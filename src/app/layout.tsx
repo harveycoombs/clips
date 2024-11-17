@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`h-screen ${inter.className} bg-white text-slate-800`}>
+            <body className={`h-screen ${inter.className} bg-white text-slate-800 dark:bg-slate-800 dark:text-white`}>
                 {children}
                 <Footer />
             </body>

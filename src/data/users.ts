@@ -22,6 +22,16 @@ export async function getUserByUsername(username: string): Promise<any> {
 	return result[0];
 }
 
+export async function getUserDetails(userid: number): Promise<any> {
+    let [result]: any = await pool.query("SELECT userid, creationdate, email, username, firstname, lastname, biography, location FROM users WHERE userid = ?", [userid]);
+    return result[0];
+}
+
+export async function getUserSettings(userid: number): Promise<any> {
+    let [result]: any = await pool.query("SELECT * FROM user_settings WHERE userid = ?", [userid]);
+    return result[0];
+}
+
 export async function createUser(firstName: string, lastName: string, username: string, email: string, password: string): Promise<number> {
 	let passwordHash = await Passwords.generateHash(password);
 
