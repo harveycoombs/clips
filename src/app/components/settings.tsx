@@ -35,6 +35,14 @@ export default function Settings({ user, settings }: Properties) {
         </SubSection>;
     }
 
+    if (user) {
+        sections["account"].content = <>
+            <SubSection title="Public Details"></SubSection>
+            <SubSection title="Account Credentials"></SubSection>
+            <SubSection title="Password"></SubSection>
+        </>
+    }
+
     let [currentSection, setCurrentSection] = useState<SectionName>("general");
     let [sectionTitle, setSectionTitle] = useState<string>(sections["general"].title);
     let [sectionContent, setSectionContent] = useState<React.JSX.Element>(sections["general"].content);

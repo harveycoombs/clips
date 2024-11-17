@@ -65,11 +65,11 @@ export default function Search({ query }: Properties) {
 				<strong className="block text-base font-bold select-none">{loading ? "Loading..." : `Showing ${users.length} Results`}</strong>
 				<div className="text-sm font-semibold text-gray-400/85 mt-3 mb-1">Users</div>
 				<motion.div variants={containerVariants} initial="hidden" animate="visible" className="overflow-hidden" key="userresultscontainer">
-					{users?.length ? users?.map((user: any) => <UserSearchResult user={user} />) : <div className="text-sm select-none text-slate-400/60">No users matching &quot;{query}&quot; found</div>}
+					{users?.length ? users?.map((user: any) => <UserSearchResult key={user.userid} user={user} />) : <div className="text-sm select-none text-slate-400/60">No users matching &quot;{query}&quot; found</div>}
 				</motion.div>
 				<div className="text-sm font-semibold text-gray-400/85 mt-3 mb-1">Posts</div>
 				<motion.div variants={containerVariants} initial="hidden" animate="visible" className="overflow-hidden" key="postresultscontainer">
-					{posts?.length ? posts?.map((post: any) => <PostSearchResult post={post} />) : <div className="text-sm select-none text-slate-400/60">No posts matching &quot;{query}&quot; found</div>}
+					{posts?.length ? posts?.map((post: any) => <PostSearchResult key={post.postid} post={post} />) : <div className="text-sm select-none text-slate-400/60">No posts matching &quot;{query}&quot; found</div>}
 				</motion.div>
 			</div>
 		</div>
@@ -78,7 +78,7 @@ export default function Search({ query }: Properties) {
 
 function UserSearchResult(props: any) {
 	return (
-		<motion.a key={props.user.userid} variants={itemVariants} href={`/users/${props.user.userid}`} target="_blank" draggable="false" className="p-2.5 rounded-md flex justify-between items-center cursor-pointer hover:bg-slate-50 active:bg-slate-100">
+		<motion.a variants={itemVariants} href={`/users/${props.user.userid}`} target="_blank" draggable="false" className="p-2.5 rounded-md flex justify-between items-center cursor-pointer hover:bg-slate-50 active:bg-slate-100">
 			<div>
 				<Image src={`/uploads/avatars/${props.user.userid}`} alt="User" draggable="false" width={46} height={46} className="object-cover aspect-square rounded-md shadow-md inline-block align-middle select-none" />
 				<div className="inline-block align-middle ml-3 select-none">
@@ -96,7 +96,7 @@ function UserSearchResult(props: any) {
 
 function PostSearchResult(props: any) {
 	return (
-		<motion.a key={props.post.postid} variants={itemVariants} href={`/posts/${props.post.postid}`} target="_blank" draggable="false" className="p-2.5 rounded-md flex justify-between items-center cursor-pointer hover:bg-slate-50 active:bg-slate-100">
+		<motion.a variants={itemVariants} href={`/posts/${props.post.postid}`} target="_blank" draggable="false" className="p-2.5 rounded-md flex justify-between items-center cursor-pointer hover:bg-slate-50 active:bg-slate-100">
 			<div>
 				<div className="inline-block align-middle">
 					<strong className="block text-base font-bold leading-tight text-slate-600">{props.post.title}</strong>
