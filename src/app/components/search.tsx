@@ -64,11 +64,11 @@ export default function Search({ query }: Properties) {
 			<div className="w-1000 bg-white p-3 rounded-lg mx-auto shadow-md">
 				<strong className="block text-base font-bold select-none">{loading ? "Loading..." : `Showing ${users.length} Results`}</strong>
 				<div className="text-sm font-semibold text-gray-400/85 mt-3 mb-1">Users</div>
-				<motion.div variants={containerVariants} initial="hidden" animate="visible" className="overflow-hidden">
+				<motion.div variants={containerVariants} initial="hidden" animate="visible" className="overflow-hidden" key="userresultscontainer">
 					{users?.length ? users?.map((user: any) => <UserSearchResult user={user} />) : <div className="text-sm select-none text-slate-400/60">No users matching &quot;{query}&quot; found</div>}
 				</motion.div>
 				<div className="text-sm font-semibold text-gray-400/85 mt-3 mb-1">Posts</div>
-				<motion.div variants={containerVariants} initial="hidden" animate="visible" className="overflow-hidden">
+				<motion.div variants={containerVariants} initial="hidden" animate="visible" className="overflow-hidden" key="postresultscontainer">
 					{posts?.length ? posts?.map((post: any) => <PostSearchResult post={post} />) : <div className="text-sm select-none text-slate-400/60">No posts matching &quot;{query}&quot; found</div>}
 				</motion.div>
 			</div>
