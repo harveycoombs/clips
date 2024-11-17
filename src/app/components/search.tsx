@@ -6,8 +6,6 @@ import { motion } from "framer-motion";
 import { searchUsers } from "@/data/users";
 import { searchPosts } from "@/data/posts";
 
-
-
 interface Properties {
 	query: string;
 }
