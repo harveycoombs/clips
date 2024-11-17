@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { createUser, emailExists, getUser, verifyCredentials } from "@/data/users";
+import { createUser, emailExists, getUserByEmailAddress, usernameExists, verifyCredentials } from "@/data/users";
 import { createJWT } from "@/data/jwt";
 
 export async function POST(request: Request): Promise<NextResponse> {
@@ -8,22 +8,26 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     let firstName = data.get("firstname")?.toString();
     let lastName = data.get("lastname")?.toString();
+    let username = data.get("username")?.toString();
     let email = data.get("email")?.toString();
     let password = data.get("password")?.toString();
 
-    if (!firstName?.length || !lastName?.length || !email?.length || !password?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
+    if (!firstName?.length || !lastName?.length || !email?.length || !password?.length || !username?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
     
+    let usernameAlreadyExists = await usernameExists(username);
+    if (usernameAlreadyExists) return NextResponse.json({ error: "Username already exists." }, { status: 409 });
+
     let emailAlreadyExists = await emailExists(email);
     if (emailAlreadyExists) return NextResponse.json({ error: "Email already exists." }, { status: 409 });
 
-    let userid = await createUser(firstName, lastName, email, password);
+    let userid = await createUser(firstName, lastName, username, email, password);
     if (!userid) return NextResponse.json({ error: "Unable to create user." }, { status: 500 });
 
 
     let valid = await verifyCredentials(email, password);
     if (!valid) return NextResponse.json({ error: "Invalid credentials." }, { status: 400 });
 
-    let user = await getUser(email);
+    let user = await getUserByEmailAddress(email);
     if (!user) return NextResponse.json({ error: "Unable to fetch newly created user." }, { status: 500 });
 
     let credentials = createJWT(user);

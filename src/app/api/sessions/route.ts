@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getUser, verifyCredentials } from "@/data/users";
+import { getUserByEmailAddress, verifyCredentials } from "@/data/users";
 import { createJWT } from "@/data/jwt";
 
 export async function POST(request: Request): Promise<NextResponse> {
@@ -15,7 +15,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     let valid = await verifyCredentials(email, password);
     if (!valid) return NextResponse.json({ error: "Invalid credentials." }, { status: 400 });
 
-    let user = await getUser(email);
+    let user = await getUserByEmailAddress(email);
     if (!user) return NextResponse.json({ success: false }, { status: 500 });
 
     let credentials = createJWT(user);

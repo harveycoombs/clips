@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import * as Users from "./users";
+import { getUserByID } from "@/data/users";
 
 export async function authenticate(token: string): Promise<any> {
 	return new Promise((resolve, reject) => {
@@ -12,7 +12,7 @@ export async function authenticate(token: string): Promise<any> {
 				reject(ex.message);
 			}
 
-			user = await Users.getUser(user.userid);
+			user = await getUserByID(user.userid);
 			resolve(user);
 		});
 	});
