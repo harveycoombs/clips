@@ -95,6 +95,8 @@ export default function Uploader({ onClose }: Properties) {
                 startTimeField.current.value = `${startMinutes < 10 ? "0" : ""}${startMinutes}:${startSeconds < 10 ? "0" : ""}${startSeconds}`;
                 endTimeField.current.value = `${lengthMinutes < 10 ? "0" : ""}${lengthMinutes}:${lengthSeconds < 10 ? "0" : ""}${lengthSeconds}`;
             }
+
+            uploadedVideo.current.currentTime = start;
         }
     }
     
