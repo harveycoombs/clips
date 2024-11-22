@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import Footer from "@/app/components/footer";
+import Banner from "@/app/components/ui/banner";
 
 const inter = Inter({
     weight: ["400", "500", "600", "700", "900"],
@@ -23,6 +24,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`h-screen ${inter.className} bg-white text-slate-800 dark:bg-slate-800 dark:text-white`}>
+                <Banner>Uploading MOV files is temporarily disabled due to technical issues.</Banner>
                 {children}
                 <Footer />
             </body>
