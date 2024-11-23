@@ -47,7 +47,7 @@ export default function RegistrationForm() {
                 setWarningExistence(false);
 
                 let json = await response.json();
-                window.location.href = `/users/${json.userid}`;
+                window.location.href = "/";
                 break;
             case 409:
                 setErrorExistence(false);

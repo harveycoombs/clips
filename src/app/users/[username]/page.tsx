@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import { FaLocationDot, FaFilm, FaComments, FaCalendarDays } from "react-icons/fa6";
 
-import { getUserByID } from "@/data/users";
+import { getUserByUsername } from "@/data/users";
 import { authenticate } from "@/data/jwt";
 import { getPosts } from "@/data/posts";
 
@@ -11,13 +11,15 @@ import Header from "@/app/components/header";
 import Post from "@/app/components/post";
 
 export default async function IndividualUser(e: any) {
-    let userid = parseInt((await e.params).id.trim());
+    let username = (await e.params).username.trim();
 
     let cookieJar = await cookies();
     let token = cookieJar.get("token")?.value;
     let currentSessionUser = await authenticate(token ?? "");
 
-    let user = await getUserByID(userid);
+    let user = await getUserByUsername(username);
+    let userid = user.userid;
+
     let fullName = `${user.firstname} ${user.lastname}`;
 
     let posts = await getPosts(0, userid);
@@ -41,7 +43,7 @@ export default async function IndividualUser(e: any) {
                     </div>
                 </section>
                 <h2 className="block font-semibold mt-6 mb-3 select-none">{user.firstname}&apos;s Posts</h2>
-                <section key="posts" className="grid grid-cols-4 gap-2">{
+                <section key="posts" className="grid grid-cols-5 gap-2">{
                     posts.map((post: any) => <Post data={post} />)
                 }</section>
             </main>

@@ -78,7 +78,7 @@ export default function Search({ query }: Properties) {
 
 function UserSearchResult(props: any) {
 	return (
-		<motion.a variants={itemVariants} href={`/users/${props.user.userid}`} target="_blank" draggable="false" className="p-2.5 rounded-md flex justify-between items-center cursor-pointer hover:bg-slate-50 active:bg-slate-100">
+		<motion.a variants={itemVariants} href={`/users/${props.user.username}`} target="_blank" draggable="false" className="p-2.5 rounded-md flex justify-between items-center cursor-pointer hover:bg-slate-50 active:bg-slate-100">
 			<div>
 				<Image src={`/uploads/avatars/${props.user.userid}`} alt="User" draggable="false" width={46} height={46} className="object-cover aspect-square rounded-md shadow-md inline-block align-middle select-none" />
 				<div className="inline-block align-middle ml-3 select-none">

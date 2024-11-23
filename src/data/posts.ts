@@ -11,7 +11,7 @@ export async function getPosts(offset: number=0, userid=0): Promise<any> {
 }
 
 export async function getPost(postid: number): Promise<any> {
-    let [result]: any = await pool.query("SELECT postid, publishdate, userid, title, description, category FROM posts WHERE postid = ?", [postid]);
+    let [result]: any = await pool.query("SELECT posts.postid, posts.publishdate, posts.userid, posts.title, posts.description, posts.category, users.firstname, users.lastname, users.username FROM posts INNER JOIN users ON users.userid = posts.userid WHERE postid = ?", [postid]);
     return result[0];
 }
 

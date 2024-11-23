@@ -23,7 +23,7 @@ export default async function Home() {
         <>
             <Header user={currentSessionUser} />
             <main className="h-[calc(100vh-110px)] w-1000 mx-auto pt-3 overflow-auto">
-                <h1 className="block text-lg font-bold select-none">Your Feed</h1>
+                <h1 className="block text-lg font-semibold select-none">Your Feed</h1>
                 {posts?.length ? <section key="categories" className="pt-1.5 pb-3 flex gap-1">{categories.map((category: any) => <Category name={category} />)}</section> : null}
                 <section key="posts" className={`grid ${posts?.length ? "grid-cols-5 gap-2" : "place-items-center mt-72"}`}>{postsGrid}</section>
             </main>
