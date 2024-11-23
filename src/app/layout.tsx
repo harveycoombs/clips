@@ -24,7 +24,6 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`h-screen ${inter.className} bg-white text-slate-800 dark:bg-slate-800 dark:text-white`}>
-                <Banner>Uploading MOV files is temporarily disabled due to technical issues.</Banner>
                 {children}
                 <Footer />
             </body>
