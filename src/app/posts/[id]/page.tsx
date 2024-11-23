@@ -21,11 +21,11 @@ export default async function IndividualPost(e: any) {
         <>
             <Header user={currentSessionUser} />
             <main className="h-[calc(100vh-110px)] w-1000 mx-auto pt-3 overflow-auto">
-                <h1 className="block text-lg font-bold mb-3 select-none">{post.title} <span className="text-slate-400 text-opacity-60">&ndash; {post.category}</span></h1>
+                <h1 className="block text-lg font-bold mb-3 select-none">{post.title} <span className="text-slate-400/60">&ndash; {post.category}</span></h1>
                 <section className="bg-slate-50 rounded-lg overflow-hidden aspect-video w-full">
                     <video src={`/uploads/posts/${post.postid}`} controls className="w-full aspect-video"></video>
                 </section>
-                <section className="flex justify-between items-center mt-3 font-medium text-slate-400 text-opacity-60">
+                <section className="flex justify-between items-center mt-3 font-medium text-slate-400/60">
                     <Link href={`/users/${post.userid}`} className="inline-block align-middle">
                         <Image src={`/uploads/avatars/${post.userid}`} alt={`${post.id}`} width={42} height={42} className="object-cover aspect-square rounded-md inline-block align-middle mr-2.5" />
                         <div className="inline-block align-middle">

@@ -36,12 +36,11 @@ export default function Uploader({ onClose }: Properties) {
 
     let uploadSteps = [
         <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragOverEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
-            <div className="w-fit mx-auto text-center select-none">
-                <div className="w-fit"><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div>
-                <div className="w-fit text-xs font-medium text-slate-400 text-opacity-65 mt-5">Supported formats: MP4, WEBM &amp; AVI</div>
-            </div>
-            
-            <input type="file" accept="video/mp4,video/x-m4v,video/*" className="hidden" ref={uploader} onChange={handleUpload} /></div>,
+            <div className="text-center select-none">
+                <div className="w-fit mx-auto"><span className="text-sm font-medium text-slate-400/65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div>
+                <div className="w-fit mx-auto text-xs font-medium text-slate-400/65 mt-5">Supported formats: MP4, WEBM &amp; AVI</div>
+            </div>            
+            <input type="file" accept="video/mp4,video/x-m4v,video/webm,video/x-msvideo" className="hidden" ref={uploader} onChange={handleUpload} /></div>,
         <div className="w-full h-[500px] grid place-items-center"><strong className="text-amber-500 font-medium">Please upload a video to continue</strong></div>,
         <div className="w-full h-[500px]">Publish Your Video</div>
     ];
@@ -61,7 +60,8 @@ export default function Uploader({ onClose }: Properties) {
     let previousLeftPosition = 0;
     let previousTrimmerWidth = 0;
 
-    let percentageLabel = useRef<HTMLElement>(null);
+    let progressBar = useRef<HTMLProgressElement>(null);
+    let percentageLabel = useRef<HTMLHeadingElement>(null);
 
     let startTimeField = useRef<HTMLInputElement>(null);
     let endTimeField = useRef<HTMLInputElement>(null);
@@ -192,11 +192,26 @@ export default function Uploader({ onClose }: Properties) {
             handleDragLeaveEvent(e);
         }
     }
+
+    function updateProgressBar(e: any) {
+        if (!e.lengthComputable) return;
+    
+        let progress = (e.loaded / e.total) * 100;
+    
+        if (progressBar.current && percentageLabel.current) {
+            progressBar.current.value = progress;
+            progressBar.current.innerHTML = `${Math.round(progress)}&percnt;`;
+            percentageLabel.current.innerHTML = `${Math.round(progress)}&percnt; Complete`;
+        }
+    }
     
     async function publish() {
         if (!uploadedFile) return;
     
-        uploadSteps[2] = <div className="w-full h-[500px] grid place-items-center"><strong className="block text-xl text-center text-slate-400 font-semibold select-none" ref={percentageLabel}>Publishing...</strong></div>;
+        uploadSteps[2] = <div className="w-full h-[500px] grid place-items-center"><strong className="block text-xl text-center text-slate-400 font-semibold select-none">
+            <strong className="block font-semibold text-sm text-center text-slate-400/65" ref={percentageLabel}>Publishing &middot; 0% Complete</strong>
+            <progress max="100" value="0" className="appearance-none w-96 h-3 mt-8"></progress>
+            </strong></div>;
         setStep(3);
     
         let data = new FormData();
@@ -219,19 +234,26 @@ export default function Uploader({ onClose }: Properties) {
         data.set("category", postCategory);
         data.set("start", videoStart.toString());
         data.set("end", videoEnd.toString());
-    
-        let response = await fetch("/api/upload", {
-            method: "POST",
-            body: data
+
+        let request = new XMLHttpRequest();
+
+        request.open("POST", "/api/upload", true);
+        request.responseType = "json";
+
+        request.upload.addEventListener("progress", updateProgressBar);
+
+        request.addEventListener("readystatechange", (e: any) => {
+            if (e.target.readyState != 4) return;        
+
+            if (e.target.status != 200) {
+                alert("Something went wrong. Please try again later.");
+                return;
+            }
+
+            window.location.href = `/posts/${e.target.response.id}`;
         });
-    
-        if (!response.ok) {
-            alert("Something went wrong.");
-            return;
-        }
-    
-        let json = await response.json();
-        window.location.href = `/posts/${json.id}`;
+
+        request.send(data);
     }
     
     function showPublishSection() {
@@ -264,7 +286,7 @@ export default function Uploader({ onClose }: Properties) {
             {uploaderContent}
             <div className="flex justify-between items-center mt-4">
                 <Button classes="bg-red-500 hover:bg-red-600 active:bg-red-700" onClick={resetUploader}>Cancel Upload</Button>
-                {(completedUploadSteps.length == 3) ? <Button onClick={publish}>Publish</Button> : <Button onClick={showPublishSection}>Continue</Button>}
+                {(completedUploadSteps.length == 3) ? <Button onClick={publish}>Publish</Button> : <Button onClick={showPublishSection} classes={!uploadedFile ? "opacity-60 pointer-events-none" : ""} disabled={!uploadedFile}>Continue</Button>}
             </div>
         </Popup>
     );

@@ -26,15 +26,15 @@ export default async function IndividualUser(e: any) {
         <>
             <Header user={currentSessionUser} />
             <main className="h-screen w-1000 mx-auto pt-3">
-                <h1 className="block text-lg font-semibold mb-3 select-none">User <span className="text-slate-400 text-opacity-60 pr-2">&#35;{user.userid}</span></h1>
+                <h1 className="block text-lg font-semibold mb-3 select-none">User <span className="text-slate-400/60 pr-2">&#35;{user.userid}</span></h1>
                 <section className="flex justify-between items-center">
                     <div>
                         <Image src={`/uploads/avatars/${user.userid}`} alt={fullName} width={60} height={60} className="inline-block align-middle aspect-square object-cover rounded-[4px]" />
                         <div className="inline-block align-middle ml-4 pb-1">
                             <strong className="text-lg font-bold">{fullName}</strong>
-                            <div className="text-sm font-medium text-slate-400 text-opacity-60"><FaLocationDot className="inline-block align-middle" /> {user.location}</div>
+                            <div className="text-sm font-medium text-slate-400/60"><FaLocationDot className="inline-block align-middle" /> {user.location}</div>
                         </div>
-                    </div><div className="text-[0.825rem] font-medium text-slate-400 text-opacity-60">
+                    </div><div className="text-[0.825rem] font-medium text-slate-400/60">
                         <div title="Videos" className="mb-1"><FaFilm className="inline-block align-middle mr-0.5" />{1}</div>
                         <div title="Comments" className="mb-1"><FaComments className="inline-block align-middle mr-0.5" />{0}</div>
                         <div title="Comments"><FaCalendarDays className="inline-block align-middle" /> {user.creationdate.toLocaleString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" })}</div>
