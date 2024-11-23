@@ -35,7 +35,13 @@ export default function Uploader({ onClose }: Properties) {
     }, []);
 
     let uploadSteps = [
-        <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragOverEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}><div><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div><input type="file" accept="video/mp4,video/x-m4v,video/*" className="hidden" ref={uploader} onChange={handleUpload} /></div>,
+        <div className="w-full h-[500px] border-2 border-slate-400 border-opacity-40 rounded-md border-dashed grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragOverEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
+            <div className="w-fit mx-auto text-center select-none">
+                <div className="w-fit"><span className="text-sm font-medium text-slate-400 text-opacity-65 mr-3">Drop files here or</span><Button onClick={() => uploader?.current?.click()}>Browse</Button></div>
+                <div className="w-fit text-xs font-medium text-slate-400 text-opacity-65 mt-5">Supported formats: MP4, WEBM &amp; AVI</div>
+            </div>
+            
+            <input type="file" accept="video/mp4,video/x-m4v,video/*" className="hidden" ref={uploader} onChange={handleUpload} /></div>,
         <div className="w-full h-[500px] grid place-items-center"><strong className="text-amber-500 font-medium">Please upload a video to continue</strong></div>,
         <div className="w-full h-[500px]">Publish Your Video</div>
     ];
