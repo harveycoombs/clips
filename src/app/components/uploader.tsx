@@ -200,8 +200,8 @@ export default function Uploader({ onClose }: Properties) {
     
         if (progressBar.current && percentageLabel.current) {
             progressBar.current.value = progress;
-            progressBar.current.innerHTML = `${Math.round(progress)}&percnt;`;
-            percentageLabel.current.innerHTML = `${Math.round(progress)}&percnt; Complete`;
+            progressBar.current.innerHTML = `Publishing &middot; ${Math.round(progress)}%`;
+            percentageLabel.current.innerHTML = `Publishing &middot; ${Math.round(progress)}% Complete`;
         }
     }
     
@@ -221,7 +221,10 @@ export default function Uploader({ onClose }: Properties) {
     
         if (videoStart && videoEnd && trimLength) {
             let trimmedVideo = await trimVideo(window.location.origin, uploadedFile, videoStart, videoEnd, (progress: number) => {
-                console.log(progress); // to-do
+                if (progressBar.current && percentageLabel.current) {
+                    progressBar.current.value = progress;
+                    percentageLabel.current.innerHTML = `Clipping &middot; ${Math.round(progress)}% Complete`;
+                }
             });
         
             data.set("file", new File([trimmedVideo], uploadedFile.name, { type: uploadedFile.type }));
