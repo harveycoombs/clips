@@ -14,8 +14,6 @@ export function formatBytes(bytes: number): string {
 }
 
 export async function trimVideo(root: string, video: File, start: number, end: number, progressCallback: any): Promise<Blob> {
-    console.log("FILENAME = ", video.name);
-
     let ffmpeg = createFFmpeg({
         log: true,
         corePath: `${root}/ffmpeg-core.js`,

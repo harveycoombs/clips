@@ -18,13 +18,21 @@ export default async function IndividualPost(e: any) {
     let token = cookieJar.get("token")?.value;
     let currentSessionUser = token?.length ? await authenticate(token) : null;
 
+    let difference = (new Date().getTime() - post.publishdate.getTime());
+
+    let hours = Math.floor(difference / 1000 / 60 / 60);
+    let minutes = Math.floor(difference / 1000 / 60);
+    let seconds = Math.floor(difference / 1000);
+
+    let postAge = hours ? `${hours}h` : minutes ? `${minutes}m` : `${seconds}s`;
+    
     return (        
         <>
             <Header user={currentSessionUser} />
             <main className="h-[calc(100vh-110px)] w-1000 mx-auto pt-3 overflow-auto">
                 <section className="flex justify-between items-center">
                     <h1 className="block text-lg font-semibold select-none">{post.title} <span className="text-slate-400/60">&ndash; {post.category}</span></h1>
-                    <div className="text-sm text-slate-400/60 font-medium select-none" title={post.publishdate.toString()}>Posted 3h ago</div>
+                    <div className="text-sm text-slate-400/60 font-medium select-none" title={post.publishdate.toString()}>Posted {postAge} ago</div>
                 </section>
                 <section className="mt-3">
                     <Player url={`/uploads/posts/${post.postid}`} />
