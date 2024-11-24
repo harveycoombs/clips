@@ -10,12 +10,12 @@ interface Properties {
 
 export default function Player({ url, classes }: Properties) {
     let [playing, setPlaying] = useState<boolean>(false);
-    let [indicatorIsVisible, setIndicatorVisibility] = useState(true);
     let [indicatorKey, setIndicatorKey] = useState(0);
 
     let video = useRef<HTMLVideoElement|null>(null);
     let seekbarContainer = useRef<HTMLDivElement|null>(null);
     let seekbar = useRef<HTMLDivElement|null>(null);
+    let elapsedDisplay = useRef<HTMLDivElement|null>(null);
 
     let seeking = false;
 
@@ -37,8 +37,23 @@ export default function Player({ url, classes }: Properties) {
         }
 
         setPlaying(!playing);
-        setIndicatorVisibility(true);
         setIndicatorKey(prev => prev + 1);
+    }
+
+    function updateElapsed(e: any) {
+        if (!seekbar?.current || !seekbarContainer?.current || !elapsedDisplay?.current) return;
+
+        let seconds = Math.round(e.target.currentTime);
+        let minutes = Math.floor(seconds / 60);
+
+        let percentage = (seconds / e.target.duration) * 100;
+        seekbar.current.style.width = `${percentage}%`;
+
+        if (minutes) {
+            seconds = (seconds % 60);
+        }
+
+        elapsedDisplay.current.innerText = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
     }
 
     return (
@@ -51,15 +66,14 @@ export default function Player({ url, classes }: Properties) {
                         duration: 0.5,
                         ease: "easeOut"
                     }}
-                    onAnimationComplete={() => setIndicatorVisibility(false)}
                     className="text-4xl absolute inset-0 z-20 w-fit h-fit m-auto"
-                >{playing ? <FaPause /> : <FaPlay />}</motion.div>
+                >{playing ? <FaPlay /> : <FaPause />}</motion.div>
             <div className="bg-gradient-to-t from-black/30 to-transparent pointer-events-none z-0 absolute h-[20%] bottom-0 left-0 right-0"></div>
-            <video src={url} className="w-full aspect-video" ref={video}></video>
+            <video src={url} className="w-full aspect-video" ref={video} onTimeUpdate={updateElapsed}></video>
             <div className="absolute bottom-0 left-0 right-0 z-10 p-3 text-xl flex gap-3 items-center" onMouseMove={seek} onMouseUp={() => seeking = false} onMouseLeave={() => seeking = false}>
                 <button>{playing ? <FaPause /> : <FaPlay />}</button>
                 <button><FaVolumeHigh /></button>
-                <div className="text-sm font-semibold">0:00</div>
+                <div className="text-sm font-semibold" ref={elapsedDisplay}>0:00</div>
                 <div className="w-full h-2 bg-white bg-opacity-30 rounded-md overflow-hidden cursor-pointer" ref={seekbarContainer} onMouseDown={() => seeking = true}>
                     <div className="h-full bg-blue-500 hover:bg-blue-600" ref={seekbar}></div>
                 </div>
