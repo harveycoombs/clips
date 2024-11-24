@@ -46,7 +46,7 @@ export default function Player({ url, classes }: Properties) {
         let seconds = Math.round(e.target.currentTime);
         let minutes = Math.floor(seconds / 60);
 
-        let percentage = (seconds / e.target.duration) * 100;
+        let percentage = (e.target.currentTime / e.target.duration) * 100;
         seekbar.current.style.width = `${percentage}%`;
 
         if (minutes) {
