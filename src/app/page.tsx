@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { FaQuestion } from "react-icons/fa6";
 
 import Header from "@/app/components/header";
-import Post from "@/app/components/post";
+import Post from "@/app/components/ui/post";
 import Category from "@/app/components/ui/category";
 
 import { getPosts, getCategories } from "@/data/posts";

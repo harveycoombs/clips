@@ -6,6 +6,7 @@ import { FaBookmark, FaShareFromSquare } from "react-icons/fa6";
 
 import Header from "@/app/components/header";
 import Button from "@/app/components/ui/button";
+import Player from "@/app/components/ui/player";
 
 import { getPost } from "@/data/posts";
 import { authenticate } from "@/data/jwt";
@@ -25,8 +26,8 @@ export default async function IndividualPost(e: any) {
                     <h1 className="block text-lg font-semibold select-none">{post.title} <span className="text-slate-400/60">&ndash; {post.category}</span></h1>
                     <div className="text-sm text-slate-400/60 font-medium select-none" title={post.publishdate.toString()}>Posted 3h ago</div>
                 </section>
-                <section className="bg-slate-50 rounded-lg overflow-hidden aspect-video w-full mt-3">
-                    <video src={`/uploads/posts/${post.postid}`} controls className="w-full aspect-video"></video>
+                <section className="mt-3">
+                    <Player url={`/uploads/posts/${post.postid}`} />
                 </section>
                 <section className="flex justify-between items-center mt-3 font-medium text-slate-400/60">
                     <Link href={`/users/${post.username}`} className="inline-block align-middle">
