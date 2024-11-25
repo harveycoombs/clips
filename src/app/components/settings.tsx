@@ -2,6 +2,9 @@
 import { useState } from "react";
 import { FaCircleNotch } from "react-icons/fa6";
 
+import Label from "@/app/components/ui/label";
+import Field from "./ui/field";
+
 interface Properties {
     user: any;
     settings: any;
@@ -37,8 +40,25 @@ export default function Settings({ user, settings }: Properties) {
 
     if (user) {
         sections["account"].content = <>
-            <SubSection title="Public Details"></SubSection>
-            <SubSection title="Account Credentials"></SubSection>
+            <SubSection title="Public Details">
+                <div className="flex gap-6">
+                    <div className="w-1/3">
+                        <Label>First Name</Label>
+                        <Field classes="block w-full" />
+                    </div>
+                    <div className="w-1/3">
+                        <Label>Last Name</Label>
+                        <Field classes="block w-full" />
+                    </div>
+                    <div className="w-1/3">
+                        <Label>Username</Label>
+                        <Field classes="block w-full" />
+                    </div>
+                </div>
+            </SubSection>
+            <SubSection title="Account Credentials">
+
+            </SubSection>
             <SubSection title="Password"></SubSection>
         </>
     }
