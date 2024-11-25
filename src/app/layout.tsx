@@ -4,7 +4,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import Footer from "@/app/components/footer";
-import Banner from "@/app/components/ui/banner";
 
 const inter = Inter({
     weight: ["400", "500", "600", "700", "900"],
@@ -12,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-    title: "Clips",
-    description: "Made by Harvey Coombs"
+    title: "Clips · Harvey Coombs",
+    description: "A video editing & sharing service."
 };
 
 export default function RootLayout({
