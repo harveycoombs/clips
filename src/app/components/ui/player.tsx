@@ -1,7 +1,7 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FaExpand, FaPause, FaPlay, FaVolumeHigh } from "react-icons/fa6";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 interface Properties {
     url: string;
@@ -9,8 +9,8 @@ interface Properties {
 }
 
 export default function Player({ url, classes }: Properties) {
-    let [playing, setPlaying] = useState<boolean>(false);
-    let [indicatorKey, setIndicatorKey] = useState(0);
+    let [playing, setPlaying] = useState<boolean>(true);
+    let [indicatorKey, setIndicatorKey] = useState<number>(0);
 
     let video = useRef<HTMLVideoElement|null>(null);
     let seekbarContainer = useRef<HTMLDivElement|null>(null);
@@ -19,22 +19,31 @@ export default function Player({ url, classes }: Properties) {
 
     let seeking = false;
 
+    useEffect(() => {
+        playing ? video?.current?.pause() : video?.current?.play();
+    }, [playing]);
+    
     function seek(e: any) {
-        if (!seekbar?.current || !seekbarContainer?.current || !seeking) return;
+        if (!seekbar?.current || !seekbarContainer?.current || !video?.current || !seeking) return;
 
         let position = Math.round(e.clientX - seekbarContainer.current.getBoundingClientRect().left);
 
+        video.current.currentTime = ((position / seekbarContainer.current.offsetWidth) * video.current.duration);
         seekbar.current.style.width = `${position}px`;
+    }
+    
+    function stopSeeking(e: any) {
+        e.stopPropagation();
+
+        seeking = false;
+        
+        if (e.type != "mouseleave") {
+            setPlaying(true);
+        }
     }
 
     function playVideo() {
-        if (!video.current) return;
-
-        if (playing) {
-            video.current.pause();
-        } else {
-            video.current.play();
-        }
+        if (!video.current || seeking) return;
 
         setPlaying(!playing);
         setIndicatorKey(prev => prev + 1);
@@ -70,12 +79,12 @@ export default function Player({ url, classes }: Properties) {
                 >{playing ? <FaPlay /> : <FaPause />}</motion.div>
             <div className="bg-gradient-to-t from-black/30 to-transparent pointer-events-none z-0 absolute h-[20%] bottom-0 left-0 right-0"></div>
             <video src={url} className="w-full aspect-video" ref={video} onTimeUpdate={updateElapsed}></video>
-            <div className="absolute bottom-0 left-0 right-0 z-10 p-3 text-xl flex gap-3 items-center" onMouseMove={seek} onMouseUp={() => seeking = false} onMouseLeave={() => seeking = false}>
+            <div className="absolute bottom-0 left-0 right-0 z-10 p-3 text-xl flex gap-3 items-center" onMouseMove={seek} onMouseUp={stopSeeking} onMouseLeave={stopSeeking}>
                 <button>{playing ? <FaPause /> : <FaPlay />}</button>
                 <button><FaVolumeHigh /></button>
                 <div className="text-sm font-semibold" ref={elapsedDisplay}>0:00</div>
                 <div className="w-full h-2 bg-white bg-opacity-30 rounded-md overflow-hidden cursor-pointer" ref={seekbarContainer} onMouseDown={() => seeking = true}>
-                    <div className="h-full bg-blue-500 hover:bg-blue-600" ref={seekbar}></div>
+                    <div className="w-0 h-full bg-blue-500" ref={seekbar}></div>
                 </div>
                 <button><FaExpand /></button>
             </div>
