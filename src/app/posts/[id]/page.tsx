@@ -20,11 +20,15 @@ export default async function IndividualPost(e: any) {
 
     let difference = (new Date().getTime() - post.publishdate.getTime());
 
+    let years = Math.floor(difference / 1000 / 60 / 60 / 24 / 365);
+    let months = Math.floor(difference / 1000 / 60 / 60 / 24 / 30);
+    let weeks = Math.floor(difference / 1000 / 60 / 60 / 24 / 7);
+    let days = Math.floor(difference / 1000 / 60 / 60 / 24);
     let hours = Math.floor(difference / 1000 / 60 / 60);
     let minutes = Math.floor(difference / 1000 / 60);
     let seconds = Math.floor(difference / 1000);
 
-    let postAge = hours ? `${hours}h` : minutes ? `${minutes}m` : `${seconds}s`;
+    let postAge = years ? `${years}y` : months ? `${months}mo` : weeks ? `${weeks}w` : days ? `${days}d` : hours ? `${hours}h` : minutes ? `${minutes}m` : `${seconds}s`;
     
     return (        
         <>
@@ -50,8 +54,11 @@ export default async function IndividualPost(e: any) {
                         <div className="inline-block align-middle text-lg ml-4 duration-150 cursor-pointer hover:text-slate-400"><FaShareFromSquare /></div>
                         <Button classes="inline-block align-middle ml-3">Download</Button>
                     </div>
-                </section><section className="text-sm text-slate-500 font-medium mt-3">                
-                    {post.description}
+                </section><section className="mt-3">                
+                    <h2 className="font-semibold">Description</h2>
+                    <p className="text-sm text-slate-500 font-medium">{post.description}</p>
+                </section><section>
+                    <h2 className="font-semibold">Comments</h2>
                 </section>
             </main>
         </>
