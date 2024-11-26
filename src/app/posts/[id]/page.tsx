@@ -8,35 +8,27 @@ import Header from "@/app/components/header";
 import Button from "@/app/components/ui/button";
 import Player from "@/app/components/ui/player";
 
-import { getPost } from "@/data/posts";
+import { getPost, getComments } from "@/data/posts";
 import { authenticate } from "@/data/jwt";
+import { formatAge } from "@/data/utils";
 
 export default async function IndividualPost(e: any) {
     let post = await getPost((await e.params).id.trim());
+    let comments = await getComments(post.postid);
 
     let cookieJar = await cookies();
     let token = cookieJar.get("token")?.value;
     let currentSessionUser = token?.length ? await authenticate(token) : null;
 
-    let difference = (new Date().getTime() - post.publishdate.getTime());
+    let postComments = comments?.length ? comments.map((comment: any) => <PostComment key={comment.commentid} data={comment} />) : <span>There are no comments on this post. <u>Be The First</u></span>;
 
-    let years = Math.floor(difference / 1000 / 60 / 60 / 24 / 365);
-    let months = Math.floor(difference / 1000 / 60 / 60 / 24 / 30);
-    let weeks = Math.floor(difference / 1000 / 60 / 60 / 24 / 7);
-    let days = Math.floor(difference / 1000 / 60 / 60 / 24);
-    let hours = Math.floor(difference / 1000 / 60 / 60);
-    let minutes = Math.floor(difference / 1000 / 60);
-    let seconds = Math.floor(difference / 1000);
-
-    let postAge = years ? `${years}y` : months ? `${months}mo` : weeks ? `${weeks}w` : days ? `${days}d` : hours ? `${hours}h` : minutes ? `${minutes}m` : `${seconds}s`;
-    
     return (        
         <>
             <Header user={currentSessionUser} />
             <main className="h-[calc(100vh-110px)] w-1000 mx-auto pt-3 overflow-auto">
                 <section className="flex justify-between items-center">
                     <h1 className="block text-lg font-semibold select-none">{post.title} <span className="text-slate-400/60">&ndash; {post.category}</span></h1>
-                    <div className="text-sm text-slate-400/60 font-medium select-none" title={post.publishdate.toString()}>Posted {postAge} ago</div>
+                    <div className="text-sm text-slate-400/60 font-medium select-none" title={post.publishdate.toString()}>Posted {formatAge(post.publishdate)} ago</div>
                 </section>
                 <section className="mt-3">
                     <Player url={`/uploads/posts/${post.postid}`} />
@@ -56,11 +48,21 @@ export default async function IndividualPost(e: any) {
                     </div>
                 </section><section className="mt-3">                
                     <h2 className="font-semibold">Description</h2>
-                    <p className="text-sm text-slate-500 font-medium">{post.description}</p>
-                </section><section>
+                    <p className="text-sm text-slate-500">{post.description}</p>
+                </section><section className="mt-3">
                     <h2 className="font-semibold">Comments</h2>
+                    {postComments}
                 </section>
             </main>
         </>
+    );
+}
+
+function PostComment({ data }: any) {
+    return (
+        <div className="py-2.5">
+            <div className="text-[0.8rem] text-slate-400/60 font-medium">{data.firstname} {data.lastname} &middot; {formatAge(data.publishdate)} ago</div>
+            <p className="text-sm text-slate-500 mt-0.5 block">{data.content}</p>
+        </div>
     );
 }

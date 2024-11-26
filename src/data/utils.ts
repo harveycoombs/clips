@@ -13,6 +13,20 @@ export function formatBytes(bytes: number): string {
     }
 }
 
+export function formatAge(raw: Date): string {
+    let difference = (new Date().getTime() - raw.getTime());
+
+    let years = Math.floor(difference / 1000 / 60 / 60 / 24 / 365);
+    let months = Math.floor(difference / 1000 / 60 / 60 / 24 / 30);
+    let weeks = Math.floor(difference / 1000 / 60 / 60 / 24 / 7);
+    let days = Math.floor(difference / 1000 / 60 / 60 / 24);
+    let hours = Math.floor(difference / 1000 / 60 / 60);
+    let minutes = Math.floor(difference / 1000 / 60);
+    let seconds = Math.floor(difference / 1000);
+
+    return years ? `${years}y` : months ? `${months}mo` : weeks ? `${weeks}w` : days ? `${days}d` : hours ? `${hours}h` : minutes ? `${minutes}m` : `${seconds}s`;
+}
+
 export async function trimVideo(root: string, video: File, start: number, end: number, progressCallback: any): Promise<Blob> {
     let ffmpeg = createFFmpeg({
         log: true,

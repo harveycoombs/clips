@@ -29,3 +29,8 @@ export async function searchPosts(query: string, offset: number=0): Promise<any[
     let [result]: any = await pool.query("SELECT postid, publishdate, title FROM posts WHERE deleted = 0 AND title LIKE ? ORDER BY publishdate DESC LIMIT 20 OFFSET ?", [`%${query}%`, offset]);
     return result;
 }
+
+export async function getComments(postid: number): Promise<any[]> {
+    let [result]: any = await pool.query("SELECT comments.commentid, comments.userid, comments.content, comments.publishdate, users.firstname, users.lastname, users.username FROM comments INNER JOIN users ON users.userid = comments.userid WHERE postid = ? ORDER BY publishdate DESC", [postid]);
+    return result;
+}
