@@ -6,9 +6,10 @@ import { motion } from "framer-motion";
 interface Properties {
     url: string;
     classes?: string;
+    [key: string]: any;
 }
 
-export default function Player({ url, classes }: Properties) {
+export default function Player({ url, classes, ...rest }: Properties) {
     let [playing, setPlaying] = useState<boolean>(true);
     let [indicatorKey, setIndicatorKey] = useState<number>(0);
 
@@ -66,7 +67,7 @@ export default function Player({ url, classes }: Properties) {
     }
 
     return (
-        <div className="relative bg-slate-50 rounded-lg overflow-hidden aspect-video w-full text-white select-none cursor-pointer" onClick={playVideo}>
+        <div className={`relative bg-slate-50 rounded-lg overflow-hidden aspect-video w-full text-white select-none cursor-pointer${classes?.length ? " " + classes : classes}`} onClick={playVideo}>
             <motion.div
                     key={indicatorKey}
                     initial={{ scale: 1, opacity: 1 }}
@@ -78,7 +79,7 @@ export default function Player({ url, classes }: Properties) {
                     className="text-4xl absolute inset-0 z-20 w-fit h-fit m-auto"
                 >{playing ? <FaPlay /> : <FaPause />}</motion.div>
             <div className="bg-gradient-to-t from-black/30 to-transparent pointer-events-none z-0 absolute h-[20%] bottom-0 left-0 right-0"></div>
-            <video src={url} className="w-full aspect-video" ref={video} onTimeUpdate={updateElapsed}></video>
+            <video src={url} className="w-full aspect-video" ref={video} onTimeUpdate={updateElapsed} {...rest}></video>
             <div className="absolute bottom-0 left-0 right-0 z-10 p-3 text-xl flex gap-3 items-center" onMouseMove={seek} onMouseUp={stopSeeking} onMouseLeave={stopSeeking}>
                 <button>{playing ? <FaPause /> : <FaPlay />}</button>
                 <button><FaVolumeHigh /></button>
