@@ -81,7 +81,7 @@ export default function Player({ url, classes, ...rest }: Properties) {
             <div className="bg-gradient-to-t from-black/30 to-transparent pointer-events-none z-0 absolute h-[20%] bottom-0 left-0 right-0"></div>
             <video src={url} className="w-full aspect-video" ref={video} onTimeUpdate={updateElapsed} {...rest}></video>
             <div className="absolute bottom-0 left-0 right-0 z-10 p-3 text-xl flex gap-3 items-center" onMouseMove={seek} onMouseUp={stopSeeking} onMouseLeave={stopSeeking}>
-                <button>{playing ? <FaPause /> : <FaPlay />}</button>
+                <button>{playing ? <FaPlay /> : <FaPause />}</button>
                 <button><FaVolumeHigh /></button>
                 <div className="text-sm font-semibold" ref={elapsedDisplay}>0:00</div>
                 <div className="w-full h-2 bg-white bg-opacity-30 rounded-md overflow-hidden cursor-pointer" ref={seekbarContainer} onMouseDown={() => seeking = true}>

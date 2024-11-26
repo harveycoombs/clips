@@ -60,9 +60,9 @@ export default async function IndividualPost(e: any) {
 
 function PostComment({ data }: any) {
     return (
-        <div className="py-2.5">
-            <div className="text-[0.8rem] text-slate-400/60 font-medium">{data.firstname} {data.lastname} &middot; {formatAge(data.publishdate)} ago</div>
-            <p className="text-sm text-slate-500 mt-0.5 block">{data.content}</p>
+        <div className="py-2 px-2.5 bg-slate-50 rounded-md mt-2">
+            <div className="text-[0.8rem] text-slate-400/65 font-semibold">{data.firstname} {data.lastname} &middot; {formatAge(data.publishdate)} ago</div>
+            <p className="text-sm font-medium text-slate-500 mt-0.5 block">{data.content}</p>
         </div>
     );
 }
