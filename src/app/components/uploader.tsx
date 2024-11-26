@@ -280,7 +280,7 @@ export default function Uploader({ onClose }: Properties) {
     }
 
     return (
-        <Popup classes="w-1000" title="Upload a Clip" onClose={resetUploader}>
+        <Popup classes="w-1200" title="Upload a Clip" onClose={resetUploader}>
             <div className="flex gap-1.5 w-3/4 mx-auto mt-2 mb-4">
                 <UploadStep number={1} title="Upload" completed={completedUploadSteps.indexOf(1) != -1} classes="rounded-l-full" />
                 <UploadStep number={2} title="Edit" completed={completedUploadSteps.indexOf(2) != -1} />

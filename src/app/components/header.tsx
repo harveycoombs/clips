@@ -39,7 +39,7 @@ export default function Header({ user }: Properties) {
     return (
         <>
             <header className="p-2.5 bg-white sticky top-0 border-b border-b-slate-300 z-30 dark:bg-slate-800 dark:border-b-slate-600">
-                <div className="w-1000 h-[34px] mx-auto flex justify-between items-center">
+                <div className="w-1200 h-[34px] mx-auto flex justify-between items-center">
                     <Link href="/" className="select-none duration-150 hover:opacity-65" draggable="false"><ClipsLogo width="59" height="27" className="inline-block align-middle" /></Link>
                     <nav>
                         <Field placeholder="Search" classes="w-72" onInput={(e: any) => {

@@ -65,6 +65,43 @@ export async function trimVideo(root: string, video: File, start: number, end: n
     }
 }
 
+export async function generateThumbnail(root: string, video: File, progressCallback: any): Promise<Blob> {
+    let ffmpeg = createFFmpeg({
+        log: true,
+        corePath: `${root}/ffmpeg-core.js`,
+        wasmPath: `${root}/ffmpeg-core.wasm`,
+        workerPath: `${root}/ffmpeg-core.worker.js`
+    });
+
+    await ffmpeg.load();
+
+    try {
+        let inputName = `input-${video.name}`;
+        let outputName = `output-${video.name}`;
+
+        ffmpeg.FS("writeFile", inputName, await fetchFile(video));
+        
+        ffmpeg.setProgress(({ ratio }: any) => progressCallback(ratio * 100));
+
+        await ffmpeg.run(
+            "-i", inputName,
+            "-ss", "00:00:01",
+            "-vframes", "1",
+            outputName
+        );
+
+        let data = ffmpeg.FS("readFile", outputName);
+        let parts = [new Uint8Array(data.buffer)];
+
+        ffmpeg.FS("unlink", inputName);
+        ffmpeg.FS("unlink", outputName);
+
+        return new Blob(parts, { type: "image/jpeg" });
+    } finally {
+        ffmpeg.exit();
+    }
+}
+
 export function getVideoExtension(type: string): string {
     switch (type) {
         case "video/mp4":

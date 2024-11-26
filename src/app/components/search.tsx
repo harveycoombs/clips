@@ -61,7 +61,7 @@ export default function Search({ query }: Properties) {
 
 	return (
 		<div className="fixed inset-0 w-screen h-screen z-20 bg-gray-800 bg-opacity-10 backdrop-blur pt-20">
-			<div className="w-1000 bg-white p-3 rounded-lg mx-auto shadow-md">
+			<div className="w-1200 bg-white p-3 rounded-lg mx-auto shadow-md">
 				<strong className="block text-base font-bold select-none">{loading ? "Loading..." : `Showing ${users.length} Results`}</strong>
 				<div className="text-sm font-semibold text-gray-400/85 mt-3 mb-1">Users</div>
 				<motion.div variants={containerVariants} initial="hidden" animate="visible" className="overflow-hidden" key="userresultscontainer">

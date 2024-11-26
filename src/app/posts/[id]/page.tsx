@@ -25,7 +25,7 @@ export default async function IndividualPost(e: any) {
     return (        
         <>
             <Header user={currentSessionUser} />
-            <main className="h-[calc(100vh-110px)] w-1000 mx-auto pt-3 overflow-auto">
+            <main className="h-[calc(100vh-110px)] w-1200 mx-auto pt-3 overflow-auto">
                 <section className="flex justify-between items-center">
                     <h1 className="block text-lg font-semibold select-none">{post.title} <span className="text-slate-400/60">&ndash; {post.category}</span></h1>
                     <div className="text-sm text-slate-400/60 font-medium select-none" title={post.publishdate.toString()}>Posted {formatAge(post.publishdate)} ago</div>

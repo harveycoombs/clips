@@ -26,7 +26,7 @@ export default async function SettingsPage() {
     return (
         <>
             <Header user={currentSessionUser} />
-            <main className="h-[calc(100vh-110px)] w-1000 mx-auto overflow-auto">
+            <main className="h-[calc(100vh-110px)] w-1200 mx-auto overflow-auto">
                 <Settings user={userDetails} settings={userSettings} />
             </main>
         </>
