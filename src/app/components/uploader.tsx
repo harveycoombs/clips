@@ -3,11 +3,11 @@ import { useState, useRef, useEffect } from "react";
 
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 
-import Button from "@/app/components/ui/button";
-import Popup from "@/app/components/ui/popup";
-import Field from "@/app/components/ui/field";
-import TextBox from "@/app/components/ui/textbox";
-import Label from "@/app/components/ui/label";
+import Button from "@/app/components/common/button";
+import Popup from "@/app/components/common/popup";
+import Field from "@/app/components/common/field";
+import TextBox from "@/app/components/common/textbox";
+import Label from "@/app/components/common/label";
 
 import { formatBytes, trimVideo } from "@/data/utils";
 import { getCategories } from "@/data/posts";

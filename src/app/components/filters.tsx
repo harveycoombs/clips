@@ -3,11 +3,11 @@ import { useState, useEffect } from "react";
 
 import { FaCircleNotch } from "react-icons/fa6";
 
-import Popup from "@/app/components/ui/popup";
-import Field from "@/app/components/ui/field";
-import Category from "@/app/components/ui/category";
-import Label from "@/app/components/ui/label";
-import Button from "@/app/components/ui/button";
+import Popup from "@/app/components/common/popup";
+import Field from "@/app/components/common/field";
+import Category from "@/app/components/common/category";
+import Label from "@/app/components/common/label";
+import Button from "@/app/components/common/button";
 
 import { getCategories } from "@/data/posts";
 

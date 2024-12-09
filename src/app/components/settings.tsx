@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { FaCircleNotch } from "react-icons/fa6";
 
-import Label from "@/app/components/ui/label";
-import Field from "./ui/field";
+import Label from "@/app/components/common/label";
+import Field from "./common/field";
 
 interface Properties {
     user: any;

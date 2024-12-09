@@ -6,10 +6,10 @@ import Image from "next/image";
 
 import { FaSliders, FaEllipsis } from "react-icons/fa6";
 
-import Button from "@/app/components/ui/button";
-import Field from "@/app/components/ui/field";
+import Button from "@/app/components/common/button";
+import Field from "@/app/components/common/field";
 import Uploader from "@/app/components/uploader";
-import ClipsLogo from "@/app/components/ui/logo";
+import ClipsLogo from "@/app/components/common/logo";
 import Search from "@/app/components/search";
 import Filters from "@/app/components/filters";
 

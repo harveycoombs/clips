@@ -5,8 +5,8 @@ import Link from "next/link";
 import { FaBookmark, FaShareFromSquare } from "react-icons/fa6";
 
 import Header from "@/app/components/header";
-import Button from "@/app/components/ui/button";
-import Player from "@/app/components/ui/player";
+import Button from "@/app/components/common/button";
+import Player from "@/app/components/common/player";
 
 import { getPost, getComments } from "@/data/posts";
 import { authenticate } from "@/data/jwt";

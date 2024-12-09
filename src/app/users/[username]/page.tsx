@@ -8,7 +8,7 @@ import { authenticate } from "@/data/jwt";
 import { getPosts } from "@/data/posts";
 
 import Header from "@/app/components/header";
-import Post from "@/app/components/ui/post";
+import Post from "@/app/components/common/post";
 
 export default async function IndividualUser(e: any) {
     let username = (await e.params).username.trim();
